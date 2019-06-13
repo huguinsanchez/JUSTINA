@@ -30,7 +30,7 @@ DetectedObject::DetectedObject( cv::Mat bgrIma, cv::Mat xyzIma, cv::Mat validMas
     int noPoints = 0; 
     cv::Point3f centroid(0.0, 0.0, 0.0); 
 
-//   cv::imshow( "validMask", validMask ); 
+   //cv::imshow( "validMask", validMask ); 
 
     float minH =  99999999.9; 
     float maxH = -99999999.9;

@@ -104,6 +104,51 @@ std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrIma
 		double colorError = cv::compareHist( detObjHisto, this->trainingHistos[i], CV_COMP_INTERSECT);
 		colorErrorsVec.push_back( colorError ); 
 	}
+
+    // recognizing Object 
+	std::string recoName = "";
+	double bestColorErrorSoFar = 0.0; 
+	for( int i=0; i<this->trainingNames.size(); i++)
+	{
+		if( heightErrorsVec[i] < this->heightErrorThres && shapeErrorsVec[i] < this->shapeErrorThres && colorErrorsVec[i] > this->colorErrorThres  )
+		{
+			if( colorErrorsVec[i] > bestColorErrorSoFar )
+			{
+				bestColorErrorSoFar = colorErrorsVec[i]; 
+				recoName = this->trainingNames[i]; 
+			}
+		}
+
+	}
+
+	return recoName;
+}
+
+std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage)
+{
+	std::vector<double> heightErrorsVec; 
+	std::vector<double> shapeErrorsVec; 
+	std::vector<double> colorErrorsVec;
+	
+	// Getting ERRORS
+	cv::Mat detObjHisto = CalculateHistogram( bgrImage, detObj.oriMask ); 
+	for( int i=0; i< this->trainingNames.size(); i++)
+	{
+		// Getting Height Errors 
+		float heightError = std::abs( detObj.height - this->trainingHeights[i] ); 
+		heightErrorsVec.push_back( heightError ); 
+		
+		// Getting Shape Errors
+		double shapeError = cv::matchShapes( detObj.shadowContour2D, this->trainingCont2D[i], CV_CONTOURS_MATCH_I1, 0.0); 
+		shapeErrorsVec.push_back( shapeError ); 
+
+		// Getting Color Errors
+		double colorError = cv::compareHist( detObjHisto, this->trainingHistos[i], CV_COMP_INTERSECT);
+		colorErrorsVec.push_back( colorError ); 
+	}
+
+
+	//part where i have to add the things for the recognizer
 	
     // recognizing Object 
 	std::string recoName = "";
