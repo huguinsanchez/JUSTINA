@@ -150,17 +150,17 @@ include_directories(
 #  src/navigation_test.cpp
 #)
 
-add_executable(monitor
-  src/monitor.cpp
-)
+#add_executable(monitor
+#  src/monitor.cpp
+#)
 
-add_executable(follow_me_test
-  src/follow_me_test.cpp
-)
+#add_executable(follow_me_test
+#  src/follow_me_test.cpp
+#)
 
-add_executable(helpMeCarry_test
-  src/helpMeCarry_test.cpp
-)
+#add_executable(helpMeCarry_test
+#  src/helpMeCarry_test.cpp
+#)
 
 #add_executable(speech_recognition_test
 #  src/speech_recognition_test.cpp
@@ -182,18 +182,18 @@ add_executable(helpMeCarry_test
 #  src/robot_inspection_test.cpp
 #)
 
-add_executable(gpsr_test
-  src/gpsr_test.cpp
-)
+#add_executable(gpsr_test
+#  src/gpsr_test.cpp
+#)
 #add_executable(person_recognition_test
 #  src/person_recognition.cpp
 #)
-add_executable(speechandperson_test
-  src/speechandperson_test.cpp
-)
-add_executable(open_challenge_test
-  src/open_challenge.cpp
-)
+#add_executable(speechandperson_test
+#  src/speechandperson_test.cpp
+#)
+#add_executable(open_challenge_test
+#  src/open_challenge.cpp
+#)
 #add_executable(the_real_open_challenge_test
 #  src/the_real_open_challenge.cpp
 #)
@@ -209,13 +209,13 @@ add_executable(open_challenge_test
 #  src/restaurant_nagoya.cpp
 #)
 
-add_executable(restaurant_canada
-  src/restaurant_canada.cpp
-)
+#add_executable(restaurant_canada
+#  src/restaurant_canada.cpp
+#)
 
-add_executable(eegpsr_test
-  src/eegpsr_test.cpp
-)
+#add_executable(eegpsr_test
+#  src/eegpsr_test.cpp
+#)
 
 #add_executable(storing_groseries_test
 #  src/storing_groseries_test.cpp
@@ -225,77 +225,77 @@ add_executable(eegpsr_test
 #  src/storing_groseries_test_2.cpp
 #)
 
-add_executable(storing_groseries_test
-  src/storing_groseries_test_2018.cpp
-)
+#add_executable(storing_groseries_test
+#  src/storing_groseries_test_2018.cpp
+#)
 
 #add_executable(tv_azteca_test
 #  src/tv_azteca_test.cpp
 #)
 
-add_executable(robot_inspection_test_2
-	src/robot_inspection_test_2.cpp
-)
+#add_executable(robot_inspection_test_2
+#	src/robot_inspection_test_2.cpp
+#)
 
-add_executable(set_a_table_test
-	src/set_a_table_and_clean_it_up.cpp
-)
+#add_executable(set_a_table_test
+#	src/set_a_table_and_clean_it_up.cpp
+#)
 
-add_executable(open_challenge_nagoya
-	src/open_challenge_nagoya.cpp
-)
+#add_executable(open_challenge_nagoya
+#	src/open_challenge_nagoya.cpp
+#)
 
-add_executable(hybrid_follow_test
-	src/hybrid_follow_test.cpp
-)
+#add_executable(hybrid_follow_test
+#	src/hybrid_follow_test.cpp
+#)
 
-add_executable(set_table
-  src/suat.cpp
-)
+#add_executable(set_table
+#  src/suat.cpp
+#)
 
-add_executable(async_audio_test
-	src/async_audio_test.cpp
-)
+#add_executable(async_audio_test
+#	src/async_audio_test.cpp
+#)
 
-add_executable(rec_obj_votation_test
-	src/rec_obj_votation_test.cpp
-)
+#add_executable(rec_obj_votation_test
+#	src/rec_obj_votation_test.cpp
+#)
 
-add_executable(cubes_challenge
-	src/cubes_challenge.cpp
-)
+#add_executable(cubes_challenge
+#	src/cubes_challenge.cpp
+#)
 
-add_executable(p_and_g_test
-	src/p_and_g_test.cpp
-)
+#add_executable(p_and_g_test
+#	src/p_and_g_test.cpp
+#)
 
-add_executable(final_cubes_challange
-	src/final_cubes_challange.cpp
-)
+#add_executable(final_cubes_challange
+#	src/final_cubes_challange.cpp
+#)
 
-add_executable(farewell
-  src/farewell.cpp
-)
+#add_executable(farewell
+#  src/farewell.cpp
+#)
 
-add_executable(receptionist
-  src/receptionist.cpp
-)
+#add_executable(receptionist
+#  src/receptionist.cpp
+#)
 
-add_executable(serving_drinks 
-  src/serving_drinks.cpp
-)
+#add_executable(serving_drinks 
+#  src/serving_drinks.cpp
+#)
 
-add_executable( carry_my_luggage
-  src/carry_my_luggage.cpp
-)
+#add_executable( carry_my_luggage
+#  src/carry_my_luggage.cpp
+#)
 
 #add_executable(visit_my_home_test
 #	src/visit_my_home_test.cpp
 #)
 
-add_executable(welcoming_visitor_test
-	src/welcoming_visitor_test.cpp
-)
+#add_executable(welcoming_visitor_test
+#	src/welcoming_visitor_test.cpp
+#)
 
 #add_executable(catering_comfort_test
 #	src/catering_comfort_test.cpp
@@ -309,39 +309,39 @@ add_executable(welcoming_visitor_test
 ## same as for the library above
 #add_dependencies(act_pln_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(navigation_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(follow_me_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(helpMeCarry_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(follow_me_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(helpMeCarry_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(speech_recognition_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(robot_inspection_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(gpsr_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(gpsr_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(person_recognition_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(open_challenge_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(open_challenge_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(the_real_open_challenge_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(just_for_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(eegpsr_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(eegpsr_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(storing_groseries_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(storing_groseries_test_2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(storing_groseries_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(speechandperson_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(storing_groseries_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(speechandperson_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(tv_azteca_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(robot_inspection_test_2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(robot_inspection_test_2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(set_a_table_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(restaurant_nagoya ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(restaurant_canada ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(open_challenge_nagoya ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(hybrid_follow_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(restaurant_canada ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(open_challenge_nagoya ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(hybrid_follow_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(set_table ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(async_audio_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(rec_obj_votation_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(cubes_challenge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(p_and_g_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(final_cubes_challange ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(farewell ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(receptionist ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(carry_my_luggage ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(async_audio_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(rec_obj_votation_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(cubes_challenge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(p_and_g_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(final_cubes_challange ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(farewell ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(receptionist ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(carry_my_luggage ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(visit_my_home_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(welcoming_visitor_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(welcoming_visitor_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(catering_comfort_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(getting_to_know_my_home ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
@@ -353,17 +353,17 @@ add_dependencies(welcoming_visitor_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${ca
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(monitor
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(follow_me_test
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(helpMeCarry_test
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(monitor
+#  ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(follow_me_test
+#  ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(helpMeCarry_test
+#  ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(restaurant_test
 #  ${catkin_LIBRARIES}
@@ -373,9 +373,9 @@ target_link_libraries(helpMeCarry_test
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(restaurant_canada
-	${catkin_LIBRARIES}
-)
+#target_link_libraries(restaurant_canada
+#	${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(manipulation_test
 #  ${catkin_LIBRARIES}
@@ -397,17 +397,17 @@ target_link_libraries(restaurant_canada
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(gpsr_test
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(gpsr_test
+#  ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(person_recognition_test
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(open_challenge_test
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(open_challenge_test
+#  ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(the_real_open_challenge_test
 #  ${catkin_LIBRARIES}
@@ -417,89 +417,89 @@ target_link_libraries(open_challenge_test
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(eegpsr_test
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(eegpsr_test
+#  ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(storing_groseries_test
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(storing_groseries_test
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(storing_groseries_test
+#  ${catkin_LIBRARIES}
+#)
 
-target_link_libraries(speechandperson_test
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(speechandperson_test
+#  ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(tv_azteca_test
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(robot_inspection_test_2
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(robot_inspection_test_2
+#  ${catkin_LIBRARIES}
+#)
 
-target_link_libraries(set_a_table_test
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(open_challenge_nagoya
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(hybrid_follow_test
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(set_table
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries(async_audio_test
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(rec_obj_votation_test
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(cubes_challenge
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(p_and_g_test
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(final_cubes_challange
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(farewell
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(receptionist
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(serving_drinks
- ${catkin_LIBRARIES}
-)
-
-target_link_libraries(carry_my_luggage
- ${catkin_LIBRARIES}
-)
+#target_link_libraries(set_a_table_test
+#  ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(open_challenge_nagoya
+#  ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(hybrid_follow_test
+#  ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(set_table
+#  ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(async_audio_test
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(rec_obj_votation_test
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(cubes_challenge
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(p_and_g_test
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(final_cubes_challange
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(farewell
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(receptionist
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(serving_drinks
+# ${catkin_LIBRARIES}
+#)
+#
+#target_link_libraries(carry_my_luggage
+# ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(visit_my_home_test
 # ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(welcoming_visitor_test
- ${catkin_LIBRARIES}
-)
+#target_link_libraries(welcoming_visitor_test
+# ${catkin_LIBRARIES}
+#)
 
 #target_link_libraries(catering_comfort_test
 # ${catkin_LIBRARIES}
@@ -508,3 +508,32 @@ target_link_libraries(welcoming_visitor_test
 #target_link_libraries(getting_to_know_my_home
 # ${catkin_LIBRARIES}
 #)
+
+
+
+#############
+###GCM
+#############
+
+
+add_executable(data_gen
+  src/hugo_data_gen.cpp
+)
+add_dependencies(data_gen ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+
+target_link_libraries(data_gen
+ ${catkin_LIBRARIES}
+)
+
+
+add_executable(hugo_test
+  src/hugo_test.cpp
+)
+add_dependencies(hugo_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+
+target_link_libraries(hugo_test
+ ${catkin_LIBRARIES}
+)
+
