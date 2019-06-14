@@ -47,7 +47,7 @@ int main(int argc, char** argv){
     while(ros::ok() && s!="q"){
 
         attempt++;
-        if(JustinaVision::detectObjectsGCM(recoObjList,false)){
+        if(JustinaVision::detectObjectsGCM(recoObjList,"bedroom",false)){
             object=recoObjList[0].id;
         }
         else{

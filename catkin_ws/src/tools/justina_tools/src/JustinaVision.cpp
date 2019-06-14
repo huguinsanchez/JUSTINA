@@ -138,7 +138,7 @@ bool JustinaVision::setNodeHandle(ros::NodeHandle* nh)
     JustinaVision::cltGetRgbdWrtRobot = nh->serviceClient<point_cloud_manager::GetRgbd>("/hardware/point_cloud_man/get_rgbd_wrt_robot");
     //Detect objects
     JustinaVision::cltDetectObjects         = nh->serviceClient<vision_msgs::DetectObjects>("/vision/obj_reco/det_objs");
-    JustinaVision::cltDetectObjectsGCM      = nh->serviceClient<vision_msgs::DetectObjects>("/vision/obj_reco/det_objs_GCM");
+    JustinaVision::cltDetectObjectsGCM      = nh->serviceClient<vision_msgs::DetectObjectsGCM>("/vision/obj_reco/det_objs_GCM");
     JustinaVision::cltDetectAllObjects      = nh->serviceClient<vision_msgs::DetectObjects>("/vision/obj_reco/det_all_objs");
     JustinaVision::cltDetectAllObjectsVot      = nh->serviceClient<vision_msgs::DetectObjects>("/vision/obj_reco/vot_objs");
     JustinaVision::cltDetecObjectsYOLO      = nh->serviceClient<vision_msgs::DetectObjects>("/vision/obj_reco/det_objs_YOLO");
@@ -490,12 +490,13 @@ bool JustinaVision::detectObjects(std::vector<vision_msgs::VisionObject>& recoOb
     std::cout << "JustinaVision.->Detected " << int(recoObjList.size()) << " objects" << std::endl;
     return true;
 }
-bool JustinaVision::detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList, bool saveFiles)
+bool JustinaVision::detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList, std::string location, bool saveFiles)
 {
     std::cout << "JustinaVision.->Trying to detect objects with GCM... " << std::endl;
-    vision_msgs::DetectObjects srv;
+    vision_msgs::DetectObjectsGCM srv;
     srv.request.saveFiles = saveFiles;
-    if(!cltDetectObjects.call(srv))
+    srv.request.location = location;
+    if(!cltDetectObjectsGCM.call(srv))
     {
         std::cout << std::endl << "Justina::Vision can't detect anything" << std::endl << std::endl;
         return false;

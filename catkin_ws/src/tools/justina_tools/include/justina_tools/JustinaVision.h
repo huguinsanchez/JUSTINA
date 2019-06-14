@@ -20,6 +20,7 @@
 #include "vision_msgs/VisionObject.h"
 #include "vision_msgs/VisionObjectList.h"
 #include "vision_msgs/DetectObjects.h"
+#include "vision_msgs/DetectObjectsGCM.h"
 #include "vision_msgs/VisionFaceTrainObject.h"
 #include "vision_msgs/VisionFaceObjects.h"
 #include "vision_msgs/FindLines.h"
@@ -172,7 +173,7 @@ public:
     static void startObjectFindingWindow();
     static void stopObjectFindingWindow();
     static bool detectObjects(std::vector<vision_msgs::VisionObject>& recoObjList, bool saveFiles = false);
-    static bool detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList, bool saveFiles = false);
+    static bool detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList,std::string location, bool saveFiles = false);
     static bool detectAllObjects(std::vector<vision_msgs::VisionObject>& recoObjList, bool saveFiles = false);
     static bool detectAllObjectsVot(std::vector<vision_msgs::VisionObject>& recoObjList, sensor_msgs::Image &image, int iterations = 1);
     //Action client for YOLO object recog

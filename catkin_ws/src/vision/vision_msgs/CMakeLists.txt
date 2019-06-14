@@ -44,6 +44,7 @@ add_service_files(
   RecognizeObject.srv
   RecognizeObjects.srv
   DetectObjects.srv
+  DetectObjectsGCM.srv
   TrainObject.srv
   FindLines.srv
   FindPlane.srv

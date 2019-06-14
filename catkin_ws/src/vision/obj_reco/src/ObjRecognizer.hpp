@@ -25,7 +25,7 @@ public:
 
     bool TrainObject(DetectedObject detObj,cv::Mat bgrImage, std::string name); 
     std::string RecognizeObject(DetectedObject detObj, cv::Mat bgrImage); 
-    std::string RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage); 
+    std::string RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location); 
     bool LoadTrainingDir();
     bool LoadTrainingDir(std::string trainingFolder);
 

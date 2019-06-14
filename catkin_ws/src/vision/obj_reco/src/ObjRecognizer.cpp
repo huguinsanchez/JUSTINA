@@ -124,8 +124,11 @@ std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrIma
 	return recoName;
 }
 
-std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage)
+std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location)
 {
+	//std::cout<<"RecognizeObjectGCM"<<std::endl;
+	//std::cout<<location<<std::endl;
+
 	std::vector<double> heightErrorsVec; 
 	std::vector<double> shapeErrorsVec; 
 	std::vector<double> colorErrorsVec;

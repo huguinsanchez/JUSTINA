@@ -30,6 +30,7 @@
 #include "vision_msgs/VisionObject.h"
 #include "vision_msgs/RecognizeObjects.h"
 #include "vision_msgs/DetectObjects.h"
+#include "vision_msgs/DetectObjectsGCM.h"
 #include "vision_msgs/TrainObject.h"
 #include "vision_msgs/VisionObjectList.h"
 #include "vision_msgs/FindLines.h"
@@ -124,7 +125,7 @@ void callback_subEnableDetectWindow(const std_msgs::Bool::ConstPtr& msg);
 void callback_subEnableRecognizeTopic(const std_msgs::Bool::ConstPtr& msg);
 void callback_subStartGripperPosition(const std_msgs::Bool::ConstPtr& msg);
 bool callback_srvDetectObjects(vision_msgs::DetectObjects::Request &req, vision_msgs::DetectObjects::Response &resp);
-bool callback_srvDetectObjectsGCM(vision_msgs::DetectObjects::Request &req, vision_msgs::DetectObjects::Response &resp);
+bool callback_srvDetectObjectsGCM(vision_msgs::DetectObjectsGCM::Request &req, vision_msgs::DetectObjectsGCM::Response &resp);
 bool callback_srvDetectAllObjects(vision_msgs::DetectObjects::Request &req, vision_msgs::DetectObjects::Response &resp);
 bool callback_srvDetectGripper(vision_msgs::DetectGripper::Request &req, vision_msgs::DetectGripper::Response &resp);
 bool callback_srvTrainObject(vision_msgs::TrainObject::Request &req, vision_msgs::TrainObject::Response &resp);
@@ -526,9 +527,9 @@ bool callback_srvDetectObjects(vision_msgs::DetectObjects::Request &req, vision_
     return true;
 }
 
-bool callback_srvDetectObjectsGCM(vision_msgs::DetectObjects::Request &req, vision_msgs::DetectObjects::Response &resp)
+bool callback_srvDetectObjectsGCM(vision_msgs::DetectObjectsGCM::Request &req, vision_msgs::DetectObjectsGCM::Response &resp)
 {
-    std::cout << execMsg  << "srvDetectObjects" << std::endl;  
+    std::cout << execMsg  << "srvDetectObjectsGCM" << std::endl;  
 
     cv::Mat imaBGR;
     cv::Mat imaPCL;
@@ -542,7 +543,7 @@ bool callback_srvDetectObjectsGCM(vision_msgs::DetectObjects::Request &req, visi
     cv::Mat imaToShow = imaBGR.clone();
     for( int i=0; i<detObjList.size(); i++)
     {
-        std::string objName = objReco.RecognizeObject( detObjList[i], imaBGR );
+        std::string objName = objReco.RecognizeObjectGCM( detObjList[i], imaBGR, req.location);
         std::string objTag;
 
         vision_msgs::VisionObject obj;

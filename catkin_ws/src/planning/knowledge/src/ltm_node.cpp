@@ -618,20 +618,24 @@ bool getVisitLocationPath(knowledge_msgs::GetVisitLocationsPath::Request &req, k
 bool getRoomOfPoint(knowledge_msgs::GetRoomOfPoint::Request &req, knowledge_msgs::GetRoomOfPoint::Response &res){
     geometry_msgs::Point32 point = req.point;
     point.z = 0.0;
-
     bool isInArena = false;
     bool isInLocation = false;
+    std::string loc_aux="";
 
     std::map<std::string, std::pair<std::string, std::vector<std::pair<float, float> > > >::iterator iterator;
 
     for(iterator = delimitation.begin(); iterator != delimitation.end() && !isInLocation; iterator++){
         std::pair<std::string, std::vector<std::pair<float, float> > > compose  = iterator->second;
         if(!validatePointInArea(compose.second, point)){
+            std::cout<<"compose.first: "<<compose.first<<std::endl;
             if(compose.first.compare(iterator->first) == 0){
                 if(iterator->first.compare("arena") == 0)
                     isInArena = true;
-                else
+                else{
                     isInLocation = true;
+                    loc_aux=compose.first;
+                }
+
             }
         }
     }
@@ -640,7 +644,7 @@ bool getRoomOfPoint(knowledge_msgs::GetRoomOfPoint::Request &req, knowledge_msgs
     if(isInArena)
         res.location.data = "arena";
     if(isInLocation)
-        res.location.data = iterator->first;
+        res.location.data = loc_aux;
 
     return true;
 }

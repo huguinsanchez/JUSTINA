@@ -27,7 +27,7 @@ int main(int argc, char** argv){
     ros::NodeHandle n;
     JustinaVision::setNodeHandle(&n);
     JustinaKnowledge::setNodeHandle(&n);
-    ros::Rate loop(10);
+    ros::Rate loop(1);
     std::string s="";
     std::string object="";
     std::ofstream myfile;
@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     myfile.flush();*/
     while(ros::ok() && s!="q"){
 
-        attempt++;
+        //attempt++;
         /*if(JustinaVision::detectObjectsGCM(recoObjList,false)){
             object=recoObjList[0].id;
         }
@@ -54,11 +54,18 @@ int main(int argc, char** argv){
         }
         std::cout<<"obj_reco.id: "<<object<<std::endl;*/
         JustinaKnowledge::getRobotPose(robot_x,robot_y,robot_a);
-        room=JustinaKnowledge::getRoomOfPoint(robot_x, robot_y);
+        //room=JustinaKnowledge::getRoomOfPoint(robot_x, robot_y);
+        if(JustinaKnowledge::isPointInKnownArea(robot_x, robot_y, "office"))
+            std::cout<<"true"<<std::endl;
+        else
+            std::cout<<"false"<<std::endl;
+        JustinaKnowledge::getRobotPoseRoom(room);
         if(room!="")
             std::cout<<"location: "<<room<<std::endl;
         else
             std::cout<<"Error "<<std::endl;
+
+        //JustinaVision::detectObjectsGCM(recoObjList,"bedroom",false);
         /*std::cout<<sentence(object)<<std::endl;
         myfile << sentence(object);
         myfile.flush();*/
@@ -67,6 +74,6 @@ int main(int argc, char** argv){
         /*std::cout << "Please enter q to quit: ";
         std::cin >> s;*/
     }
-    myfile.close();
+    //myfile.close();
     return 0;
 }
