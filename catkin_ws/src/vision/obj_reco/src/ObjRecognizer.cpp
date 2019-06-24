@@ -81,12 +81,13 @@ ObjRecognizer::ObjRecognizer()
 	}
 
 }
-
-std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrImage)
+//original function
+/*std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrImage)
 {
 	std::vector<double> heightErrorsVec; 
 	std::vector<double> shapeErrorsVec; 
 	std::vector<double> colorErrorsVec;
+
 	
 	// Getting ERRORS
 	cv::Mat detObjHisto = CalculateHistogram( bgrImage, detObj.oriMask ); 
@@ -122,16 +123,16 @@ std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrIma
 	}
 
 	return recoName;
-}
+}*/
 
-std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location)
+//function modified to calculate an euclidian distance insted of cascade method
+std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrImage)
 {
-	//std::cout<<"RecognizeObjectGCM"<<std::endl;
-	//std::cout<<location<<std::endl;
-
 	std::vector<double> heightErrorsVec; 
 	std::vector<double> shapeErrorsVec; 
 	std::vector<double> colorErrorsVec;
+	std::vector<double> global_error;
+
 	
 	// Getting ERRORS
 	cv::Mat detObjHisto = CalculateHistogram( bgrImage, detObj.oriMask ); 
@@ -146,29 +147,117 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 		shapeErrorsVec.push_back( shapeError ); 
 
 		// Getting Color Errors
-		double colorError = cv::compareHist( detObjHisto, this->trainingHistos[i], CV_COMP_INTERSECT);
+		double colorError = exp(-cv::compareHist( detObjHisto, this->trainingHistos[i], CV_COMP_INTERSECT));
+		colorErrorsVec.push_back( colorError ); 
+	}
+
+	for (size_t i=0; i <this->trainingNames.size();i++){
+		global_error.push_back(sqrt((heightErrorsVec[i]*heightErrorsVec[i])+(shapeErrorsVec[i]*shapeErrorsVec[i])+(colorErrorsVec[i]*colorErrorsVec[i])));
+	}
+
+    // recognizing Object 
+	std::string recoName = "";
+	double minErrorSoFar = 0.0;
+	if(this->trainingNames.size()>0) minErrorSoFar=global_error[0];
+	
+	for(size_t i=0;i<trainingNames.size();i++){
+		if(minErrorSoFar>global_error[i]){
+			minErrorSoFar=global_error[i];
+			recoName=this->trainingNames[i];
+			/*std::cout<<"heightError: "<<colorErrorsVec[i]<<std::endl;
+			std::cout<<"shapeError: "<<shapeErrorsVec[i]<<std::endl;
+			std::cout<<"colorError: "<<colorErrorsVec[i]<<std::endl;
+			std::cout<<"minErrorSoFar: "<<minErrorSoFar<<std::endl;*/
+		}
+	}
+
+	return recoName;
+}
+
+std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location)
+{
+	//std::cout<<"RecognizeObjectGCM"<<std::endl;
+	//std::cout<<location<<std::endl;
+
+	std::vector<double> heightErrorsVec; 
+	std::vector<double> shapeErrorsVec; 
+	std::vector<double> colorErrorsVec;
+	std::vector<double> global_error;
+	// Getting ERRORS diferences
+	cv::Mat detObjHisto = CalculateHistogram( bgrImage, detObj.oriMask ); 
+	for( int i=0; i< this->trainingNames.size(); i++)
+	{
+		// Getting Height Errors 
+		float heightError = std::abs( detObj.height - this->trainingHeights[i] ); 
+		heightErrorsVec.push_back( heightError ); 
+		
+		// Getting Shape Errors
+		double shapeError = cv::matchShapes( detObj.shadowContour2D, this->trainingCont2D[i], CV_CONTOURS_MATCH_I1, 0.0); 
+		shapeErrorsVec.push_back( shapeError ); 
+
+		// Getting Color Errors
+		double colorError = exp(-cv::compareHist( detObjHisto, this->trainingHistos[i], CV_COMP_INTERSECT));
 		colorErrorsVec.push_back( colorError ); 
 	}
 
 
-	//part where i have to add the things for the recognizer
+	//euclidian distance
+	for (size_t i=0; i <this->trainingNames.size();i++){
+		
+		global_error.push_back(sqrt((heightErrorsVec[i]*heightErrorsVec[i])+(shapeErrorsVec[i]*shapeErrorsVec[i])+(colorErrorsVec[i]*colorErrorsVec[i])));
+	}
 	
-    // recognizing Object 
-	std::string recoName = "";
-	double bestColorErrorSoFar = 0.0; 
-	for( int i=0; i<this->trainingNames.size(); i++)
-	{
-		if( heightErrorsVec[i] < this->heightErrorThres && shapeErrorsVec[i] < this->shapeErrorThres && colorErrorsVec[i] > this->colorErrorThres  )
-		{
-			if( colorErrorsVec[i] > bestColorErrorSoFar )
-			{
-				bestColorErrorSoFar = colorErrorsVec[i]; 
-				recoName = this->trainingNames[i]; 
-			}
-		}
+	//calculating similities
+	/*std::cout<<"before similities"<<std::endl;
+	for(size_t i=0;i<global_error.size();i++){
 
+		std::cout<<global_error[i]<<std::endl;
 	}
 
+	for(size_t i=0;i<global_error.size();i++){
+
+		global_error[i]=2*exp(-.5*global_error[i]);
+	}
+
+	std::cout<<"after after"<<std::endl;
+	for(size_t i=0;i<global_error.size();i++){
+
+		std::cout<<global_error[i]<<std::endl;
+	}*/
+
+	//applying GCM a=m*s
+
+	for (size_t i=0; i <this->trainingNames.size();i++){
+		
+		if(location=="kitchen"){
+			if(this->trainingNames[i]=="book"||this->trainingNames[i]=="green_mug"||this->trainingNames[i]=="cutting_board"){
+				//std::cout<<"m = kitchen"<<std::endl;
+				global_error[i]*=1.0/1;
+			}
+		}
+		else if(location=="office"){
+			if(this->trainingNames[i]=="green_pen_holder"||this->trainingNames[i]=="organ_attack"||this->trainingNames[i]=="white_board"){
+				//std::cout<<"m = office"<<std::endl;
+				global_error[i]*=1.0/1;
+			}
+		}
+	}
+
+    // recognizing Object 
+	std::string recoName = "";
+	double minErrorSoFar = 0.0;
+	if(this->trainingNames.size()>0) minErrorSoFar=global_error[0];
+	
+	for(size_t i=0;i<trainingNames.size();i++){
+		if(minErrorSoFar>global_error[i]){
+			minErrorSoFar=global_error[i];
+			recoName=this->trainingNames[i];
+			/*std::cout<<"heightError: "<<colorErrorsVec[i]<<std::endl;
+			std::cout<<"shapeError: "<<shapeErrorsVec[i]<<std::endl;
+			std::cout<<"colorError: "<<colorErrorsVec[i]<<std::endl;
+			std::cout<<"minErrorSoFar: "<<minErrorSoFar<<std::endl;*/
+		}
+	}
 	return recoName;
 }
 
@@ -414,3 +503,4 @@ cv::Mat ObjRecognizer::CalculateHistogram( cv::Mat bgrImage, cv::Mat mask )
 	//cv::normalize(histogram, histogram,  0, 1, CV_MINMAX); 
 	return newHisto; 
 }
+
