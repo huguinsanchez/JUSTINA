@@ -46,7 +46,12 @@ int main(int argc, char** argv){
     while(ros::ok() && s!="q"){
 
         //attempt++;
-        if(JustinaVision::detectObjectsGCM(recoObjList,"kitchen",false)){
+        JustinaKnowledge::getRobotPoseRoom(room);
+        if(room!="")
+            std::cout<<"location: "<<room<<std::endl;
+        else
+            std::cout<<"Error "<<std::endl;
+        if(JustinaVision::detectObjectsGCM(recoObjList,room,false)){
             object=recoObjList[0].id;
         }
         else{
@@ -59,11 +64,6 @@ int main(int argc, char** argv){
             std::cout<<"true"<<std::endl;
         else
             std::cout<<"false"<<std::endl;*/
-        //JustinaKnowledge::getRobotPoseRoom(room);
-        /*if(room!="")
-            std::cout<<"location: "<<room<<std::endl;
-        else
-            std::cout<<"Error "<<std::endl;*/
 
         //JustinaVision::detectObjectsGCM(recoObjList,"bedroom",false);
         /*std::cout<<sentence(object)<<std::endl;

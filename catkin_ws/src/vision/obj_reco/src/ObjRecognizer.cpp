@@ -128,12 +128,12 @@ ObjRecognizer::ObjRecognizer()
 //function modified to calculate an euclidian distance insted of cascade method
 std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrImage)
 {
+	std::cout<<"RecognizeObject"<<std::endl;
 	std::vector<double> heightErrorsVec; 
 	std::vector<double> shapeErrorsVec; 
 	std::vector<double> colorErrorsVec;
 	std::vector<double> global_error;
 
-	
 	// Getting ERRORS
 	cv::Mat detObjHisto = CalculateHistogram( bgrImage, detObj.oriMask ); 
 	for( int i=0; i< this->trainingNames.size(); i++)
@@ -176,7 +176,7 @@ std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrIma
 
 std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location)
 {
-	//std::cout<<"RecognizeObjectGCM"<<std::endl;
+	std::cout<<"RecognizeObjectGCM"<<std::endl;
 	//std::cout<<location<<std::endl;
 
 	std::vector<double> heightErrorsVec; 
@@ -212,14 +212,14 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 	for(size_t i=0;i<global_error.size();i++){
 
 		std::cout<<global_error[i]<<std::endl;
-	}
+	}*/
 
 	for(size_t i=0;i<global_error.size();i++){
 
-		global_error[i]=2*exp(-.5*global_error[i]);
+		global_error[i]=exp(-.05*global_error[i]);
 	}
 
-	std::cout<<"after after"<<std::endl;
+	/*std::cout<<"after similities"<<std::endl;
 	for(size_t i=0;i<global_error.size();i++){
 
 		std::cout<<global_error[i]<<std::endl;
@@ -232,13 +232,13 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 		if(location=="kitchen"){
 			if(this->trainingNames[i]=="book"||this->trainingNames[i]=="green_mug"||this->trainingNames[i]=="cutting_board"){
 				//std::cout<<"m = kitchen"<<std::endl;
-				global_error[i]*=1.0/1;
+				global_error[i]*=1.0/5;
 			}
 		}
 		else if(location=="office"){
 			if(this->trainingNames[i]=="green_pen_holder"||this->trainingNames[i]=="organ_attack"||this->trainingNames[i]=="white_board"){
 				//std::cout<<"m = office"<<std::endl;
-				global_error[i]*=1.0/1;
+				global_error[i]*=1.0/5;
 			}
 		}
 	}
@@ -249,7 +249,7 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 	if(this->trainingNames.size()>0) minErrorSoFar=global_error[0];
 	
 	for(size_t i=0;i<trainingNames.size();i++){
-		if(minErrorSoFar>global_error[i]){
+		if(minErrorSoFar<global_error[i]){
 			minErrorSoFar=global_error[i];
 			recoName=this->trainingNames[i];
 			/*std::cout<<"heightError: "<<colorErrorsVec[i]<<std::endl;
