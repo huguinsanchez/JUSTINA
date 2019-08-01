@@ -18,6 +18,7 @@
 #include "std_msgs/String.h"
 #include "env_msgs/AddUpdateObjectViz.h"
 #include "navig_msgs/PlanPath.h"
+#include "navig_msgs/prob_localization.h"
 #include "tf/transform_listener.h"
 
 #include "knowledge_msgs/KnownLocations.h"
@@ -49,6 +50,7 @@ class JustinaKnowledge {
         static ros::ServiceClient * cliGetVisitLocationsPath;
         static ros::ServiceClient * cliGetPlanPath;
         static ros::ServiceClient * cliGetRoomOfPoint;
+        static ros::ServiceClient * cliGetProbOfBeingRoom;
 
         static bool updateKnownLoc;
         static bool initKnownLoc;
@@ -87,6 +89,7 @@ class JustinaKnowledge {
         static bool comparePredQuestion(std::string question, std::string &answer);
         static void addUpdateObjectViz(std::string id, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float centroidX, float centroidY, float centroidZ, float colorR, float colorG, float colorB, std::string frame_original, std::string frame_goal);
         static bool isPointInKnownArea(float x, float y, std::string location);
+        static bool getProbOfBeingRoom(std::string room, float &prob);
         static std::vector<std::string> getRoomsFromPath(nav_msgs::Path path);
         static std::vector<std::string> getRoomsFromPath(float startX, float startY, float goalX, float goalY);
         static std::vector<std::string> getRoomsFromPath(float startX, float startY, std::string goalLocation);

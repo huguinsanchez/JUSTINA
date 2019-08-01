@@ -2,7 +2,7 @@
 #include "justina_tools/JustinaKnowledge.h"
 #include <iostream>
 #include <fstream>
-
+#include <utility>
 
 #include <sstream>
 
@@ -34,6 +34,8 @@ int main(int argc, char** argv){
     std::vector<vision_msgs::VisionObject> recoObjList;
     float robot_x,robot_y,robot_a;
     std::string room="";
+    float prob;
+    std::map<std::string, std::vector<float> > locations;
     
 
    /* myfile.open ("/home/pumas/Desktop/data_hugo/cutting_board.csv",std::ios::app|std::ios::out);
@@ -45,34 +47,36 @@ int main(int argc, char** argv){
     myfile.flush();*/
     while(ros::ok() && s!="q"){
 
-        //attempt++;
-        JustinaKnowledge::getRobotPoseRoom(room);
-        if(room!="")
+        /*JustinaKnowledge::getRobotPoseRoom(room);
+        if(room!=""){
             std::cout<<"location: "<<room<<std::endl;
+            JustinaKnowledge::getProbOfBeingRoom("kitchen",prob);
+            std::cout<<room<<": "<<prob<<std::endl;
+        }
         else
-            std::cout<<"Error "<<std::endl;
-        if(JustinaVision::detectObjectsGCM(recoObjList,room,false)){
+            std::cout<<"Error "<<std::endl;*/
+        JustinaKnowledge::getProbOfBeingRoom("kitchen",prob);
+        std::cout<<"kitchen: "<<prob<<std::endl;
+        JustinaKnowledge::getProbOfBeingRoom("office",prob);
+        std::cout<<"office: "<<prob<<std::endl;
+        JustinaKnowledge::getProbOfBeingRoom("arena",prob);
+        std::cout<<"arena: "<<prob<<std::endl;
+        /*JustinaKnowledge::getKnownLocations(locations);
+
+        for(auto it = locations.cbegin(); it != locations.cend(); ++it){
+            std::cout << it->first << " " << it->second<<"\n";
+        }*/
+
+        /*if(JustinaVision::detectObjectsGCM(recoObjList,room,false)){
             object=recoObjList[0].id;
         }
         else{
             object="no detected";
         }
-        std::cout<<"obj_reco.id: "<<object<<std::endl;
-        //JustinaKnowledge::getRobotPose(robot_x,robot_y,robot_a);
-        //room=JustinaKnowledge::getRoomOfPoint(robot_x, robot_y);
-        /*if(JustinaKnowledge::isPointInKnownArea(robot_x, robot_y, "office"))
-            std::cout<<"true"<<std::endl;
-        else
-            std::cout<<"false"<<std::endl;*/
+        std::cout<<"obj_reco.id: "<<object<<std::endl;*/
 
-        //JustinaVision::detectObjectsGCM(recoObjList,"bedroom",false);
-        /*std::cout<<sentence(object)<<std::endl;
-        myfile << sentence(object);
-        myfile.flush();*/
         ros::spinOnce();
         loop.sleep();
-        /*std::cout << "Please enter q to quit: ";
-        std::cin >> s;*/
     }
     //myfile.close();
     return 0;

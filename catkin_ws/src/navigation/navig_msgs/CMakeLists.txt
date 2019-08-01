@@ -60,6 +60,7 @@ add_service_files(
   PathFromAll.srv
   PathFromMap.srv
   PlanPath.srv
+  prob_localization.srv
 )
 
 ## Generate actions in the 'action' folder

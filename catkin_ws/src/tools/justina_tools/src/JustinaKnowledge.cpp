@@ -23,6 +23,7 @@ ros::ServiceClient * JustinaKnowledge::cliIsInArea;
 ros::ServiceClient * JustinaKnowledge::cliGetVisitLocationsPath;
 ros::ServiceClient * JustinaKnowledge::cliGetPlanPath;
 ros::ServiceClient * JustinaKnowledge::cliGetRoomOfPoint;
+ros::ServiceClient * JustinaKnowledge::cliGetProbOfBeingRoom;
 bool JustinaKnowledge::updateKnownLoc = false;
 bool JustinaKnowledge::initKnownLoc = false;
 tf::TransformListener* JustinaKnowledge::tf_listener;
@@ -41,6 +42,7 @@ JustinaKnowledge::~JustinaKnowledge(){
     delete cliIsInArea;
     delete cliGetVisitLocationsPath;
     delete cliGetPlanPath;
+    delete cliGetProbOfBeingRoom;
     delete tf_listener;
 }
 
@@ -88,6 +90,9 @@ void JustinaKnowledge::setNodeHandle(ros::NodeHandle * nh) {
     cliGetRoomOfPoint = new ros::ServiceClient(
             nh->serviceClient<knowledge_msgs::GetRoomOfPoint>(
                 "/knowledge/get_room_of_point"));
+    cliGetProbOfBeingRoom = new ros::ServiceClient(
+            nh->serviceClient<navig_msgs::prob_localization>(
+                "/navigation/localization/prob_location"));
     tf_listener->waitForTransform("map", "base_link", ros::Time(0), ros::Duration(5.0));
 }
 
@@ -437,4 +442,15 @@ std::string JustinaKnowledge::getRoomOfPoint(float x, float y){
         return "";
     }
     return srv.response.location.data;
+}
+
+bool JustinaKnowledge::getProbOfBeingRoom(std::string room, float &prob){
+    navig_msgs::prob_localization srv;
+    srv.request.room=room;
+    if(!cliGetProbOfBeingRoom->call(srv)){
+        ROS_ERROR("Failed to call service prob_location");
+        return false;
+    }
+    prob=srv.response.prob.data;
+    return  true;
 }
