@@ -228,6 +228,7 @@ def Initialize():
     clips.BatchStar(filePath + os.sep + 'CLIPS' + os.sep + 'functions.clp')
     clips.BatchStar(filePath + os.sep + 'CLIPS' + os.sep + 'monitor.clp')
     clips.BatchStar(filePath + os.sep + 'CLIPS' + os.sep + 'virbot_blackboard.clp')
+    clips.BatchStar(filePath + os.sep + 'CLIPS' + os.sep + 'virbot_default_facts.clp')
     
     file_gpsr = filePath + '/virbot_gpsr/speechTest.dat'
     print file_gpsr
@@ -569,6 +570,20 @@ def cmd_follow_to_taxi(cmd):
     pubCmdFollowToTaxi.publish(request)
     return cmd._id
 
+def clean_up(cmd):
+    global pubCmdCleanUp 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdCleanUp.publish(request)
+    return cmd._id
+
+def take_out_garbage(cmd):
+    global pubCmdTakeOutGarbage 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdTakeOutGarbage.publish(request)
+    return cmd._id
+
 def introduce_person(cmd):
     global pubCmdIntroducePerson
     print "Executing Function: " + cmd.name
@@ -623,6 +638,62 @@ def objects_on_location(cmd):
     print "Executing Function: " + cmd.name
     request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
     pubCmdObjectsOnLocation.publish(request)
+    return cmd._id
+
+def rpose_obj(cmd):
+    global pubCmdRPoseObj 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdRPoseObj.publish(request)
+    return cmd._id
+
+def pourin_obj(cmd):
+    global pubCmdPourinObj 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdPourinObj.publish(request)
+    return cmd._id
+
+def storage_obj(cmd):
+    global pubCmdStorageObj 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdStorageObj.publish(request)
+    return cmd._id
+
+def obj_desc(cmd):
+    global pubCmdObjDesc 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdObjDesc.publish(request)
+    return cmd._id
+
+def retrieve_object(cmd):
+    global pubCmdRetrieveObj 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdRetrieveObj.publish(request)
+    return cmd._id
+
+def interact_with_door(cmd):
+    global pubCmdInteractDoor 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdInteractDoor.publish(request)
+    return cmd._id
+
+def set_tableware(cmd):
+    global pubCmdSetTableware 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdSetTableware.publish(request)
+    return cmd._id
+
+def set_cutlery(cmd):
+    global pubCmdSetCutlery 
+    print "Executing Function: " + cmd.name
+    request = PlanningCmdClips(cmd.name, cmd.params, cmd._id, False)
+    pubCmdSetCutlery.publish(request)
     return cmd._id
 
 #Define the function map, this function are the functions that represent of task in the clips rules.
@@ -684,7 +755,17 @@ fmap = {
     'cmd_follow_to_taxi': cmd_follow_to_taxi,
     'introduce_person': introduce_person,
     'make_question': make_question,
-    'guide_to_taxi': guide_to_taxi
+    'guide_to_taxi': guide_to_taxi,
+    'clean_up': clean_up,
+    'take_out_garbage': take_out_garbage,
+    'rpose_obj': rpose_obj,
+    'pourin_obj': pourin_obj,
+    'storage_obj': storage_obj,
+    'obj_desc': obj_desc,
+    'retrieve_object': retrieve_object,
+    'interact_with_door': interact_with_door,
+    'set_tableware': set_tableware,
+    'set_cutlery': set_cutlery
 }
 
 def quit():
@@ -700,7 +781,8 @@ def main():
     global pubEnableSimulated, pubUpdateStack, pubResetCubePos, pubCmdTaskConfirmation, pubCmdAlignWithPoint, pubCmdUpdateKnowLocation 
     global pubCmdManyPeople, pubCmdAmountPeople, pubCmdAskAndOffer, pubFindEPerson, pubScanPerson, pubRemindPerson, pubFindRemindedPerson, pubCmdOfferDrink 
     global pubAskInc, pubGetPersonDescription, pubCmdClipsSignal, pubCmdTrainPerson, pubCmdGetOrder, pubCmdDeliverOrder, pubCmdObjectsOnLocation  
-    global pubCmdGetBag, pubCmdFollowToTaxi, pubCmdIntroducePerson, pubCmdMakeQuestion, pubCmdGuideToTaxi  
+    global pubCmdGetBag, pubCmdFollowToTaxi, pubCmdIntroducePerson, pubCmdMakeQuestion, pubCmdGuideToTaxi, pubCmdCleanUp, pubCmdTakeOutGarbage  
+    global pubCmdRPoseObj, pubCmdPourinObj, pubCmdStorageObj, pubCmdObjDesc, pubCmdRetrieveObj, pubCmdInteractDoor, pubCmdSetTableware, pubCmdSetCutlery 
     global file_gpsr
 
     rospy.init_node('knowledge_representation')
@@ -748,6 +830,8 @@ def main():
     pubCmdIntroducePerson = rospy.Publisher('/planning_clips/introduce_person', PlanningCmdClips, queue_size=1)
     pubCmdMakeQuestion = rospy.Publisher('/planning_clips/make_question', PlanningCmdClips, queue_size=1)
     pubCmdGuideToTaxi = rospy.Publisher('/planning_clips/guide_to_taxi', PlanningCmdClips, queue_size=1)
+    pubCmdCleanUp = rospy.Publisher('/planning_clips/clean_up', PlanningCmdClips, queue_size=1)
+    pubCmdTakeOutGarbage = rospy.Publisher('/planning_clips/take_out_garbage', PlanningCmdClips, queue_size=1)
     
     ##topicos de serving drinks
     pubCmdOfferDrink = rospy.Publisher('/planning_clips/cmd_offer_drink', PlanningCmdClips, queue_size=1)
@@ -781,6 +865,14 @@ def main():
     pubFindRemindedPerson = rospy.Publisher('/planning_clips/cmd_find_reminded_person', PlanningCmdClips, queue_size=1)
     pubAskInc = rospy.Publisher('/planning_clips/cmd_ask_inc', PlanningCmdClips, queue_size=1)
     pubGetPersonDescription = rospy.Publisher('/planning_clips/cmd_get_person_description', PlanningCmdClips, queue_size=1)
+    pubCmdRPoseObj = rospy.Publisher('/planning_clips/rpose_obj', PlanningCmdClips, queue_size=1)
+    pubCmdPourinObj = rospy.Publisher('/planning_clips/pourin_obj', PlanningCmdClips, queue_size=1)
+    pubCmdStorageObj = rospy.Publisher('/planning_clips/storage_obj', PlanningCmdClips, queue_size=1)
+    pubCmdObjDesc = rospy.Publisher('/planning_clips/obj_desc', PlanningCmdClips, queue_size=1)
+    pubCmdRetrieveObj = rospy.Publisher('/planning_clips/retrieve_object', PlanningCmdClips, queue_size=1)
+    pubCmdInteractDoor = rospy.Publisher('/planning_clips/interact_with_door', PlanningCmdClips, queue_size=1)
+    pubCmdSetTableware = rospy.Publisher('/planning_clips/set_tableware', PlanningCmdClips, queue_size=1)
+    pubCmdSetCutlery = rospy.Publisher('/planning_clips/set_cutlery', PlanningCmdClips, queue_size=1)
 
     Initialize()
     

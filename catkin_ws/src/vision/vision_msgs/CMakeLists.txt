@@ -32,6 +32,8 @@ add_message_files(
   MSG_VisionPlasticTray.msg
   MSG_ObjectsPile.msg
   MSG_VisionDishwasher.msg
+  MaskBoundingBox.msg
+  MaskBoundingBoxes.msg
   BoundingBox.msg
   BoundingBoxes.msg
   OpenPoseKeyPoint.msg
@@ -60,6 +62,9 @@ add_service_files(
   SRV_FindDishwasher.srv
   image_srv.srv
   OpenPoseRecognize.srv
+  ObjectRecognize.srv
+  SetTrainingDir.srv
+  GetObjectsColor.srv
 )
 
 add_action_files(

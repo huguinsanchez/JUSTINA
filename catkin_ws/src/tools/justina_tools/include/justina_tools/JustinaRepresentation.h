@@ -17,6 +17,7 @@
 #include "knowledge_msgs/planning_cmd.h"
 #include "knowledge_msgs/StrQueryKDB.h"
 #include "knowledge_msgs/InitKDB.h"
+#include "knowledge_msgs/kdbFilePath.h"
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -42,6 +43,10 @@ class JustinaRepresentation {
         static ros::ServiceClient * cliStringInterpretation;
         static ros::ServiceClient * cliStrQueryKDB;
         static ros::ServiceClient * cliInitKDB;
+        static ros::ServiceClient * cliLocationPath;
+        static ros::ServiceClient * cliObjectPath;
+        static ros::ServiceClient * cliCategoryPath;
+        static ros::ServiceClient * cliPeoplePath;
 
         //static bool strQueryKDB(std::string query, std::string &result, int timeout);
 
@@ -57,10 +62,24 @@ class JustinaRepresentation {
         static void agendaCLIPS(bool enable);
         static void sendCLIPS(std::string command);
         static void loadCLIPS(std::string file);
-        static void getLocations(std::string path ,std::map<std::string, std::vector<std::string> >& locations);
-        static void getObjects(std::string path ,std::map<std::string, std::vector<std::string> >& objects);
+        
+        static void getLocations(std::string path ,std::map<std::string, std::vector<std::string> >& locations, bool init = false);
+        static void getObjects(std::string path ,std::map<std::string, std::vector<std::string> >& objects, bool init = false);
+        static void getCategorys(std::string path ,std::map<std::string, std::vector<std::string> >& categorys, bool init = false);//
+        static void getPeoples(std::string path , std::map<std::string , std::vector<std::string> >& peoples, bool init = false);//
+        
         static void addLocations(std::map<std::string, std::vector<std::string> >& locations, std::string name, std::vector<std::string> values);
         static void addObjects(std::map<std::string, std::vector<std::string> >& objects, std::string name, std::vector<std::string> values);
+        static void addPeoples(std::map<std::string , std::vector<std::string> >& peoples, std::string name, std::vector<std::string> values);//
+        static void addCategorys(std::map<std::string, std::vector<std::string> >& categorys,std::string name, std::vector<std::string> values);//
+        
+        static void deleteLocations(std::map<std::string , std::vector<std::string> >& locations, std::string name);//
+        static void deleteObjects(std::map<std::string , std::vector<std::string> >& objects, std::string name);//
+        static void deletePeoples(std::map<std::string , std::vector<std::string> >& peoples, std::string name);//
+        static void deleteCategorys(std::map<std::string , std::vector<std::string> >& categorys, std::string name);//
+
+        static std::string covertLetters(std::string chain);
+        
         static void sendAndRunCLIPS(std::string command);
         static bool speachInterpretation();
         static bool stringInterpretation(std::string strToInterpretation, std::string &strInterpreted);

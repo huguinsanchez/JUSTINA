@@ -13,6 +13,10 @@ ros::ServiceClient * JustinaRepresentation::cliSpechInterpretation;
 ros::ServiceClient * JustinaRepresentation::cliStringInterpretation;
 ros::ServiceClient * JustinaRepresentation::cliStrQueryKDB;
 ros::ServiceClient * JustinaRepresentation::cliInitKDB;
+ros::ServiceClient * JustinaRepresentation::cliLocationPath;
+ros::ServiceClient * JustinaRepresentation::cliObjectPath;
+ros::ServiceClient * JustinaRepresentation::cliCategoryPath;
+ros::ServiceClient * JustinaRepresentation::cliPeoplePath;
 
 JustinaRepresentation::~JustinaRepresentation(){
     delete command_runCLIPS;
@@ -28,6 +32,10 @@ JustinaRepresentation::~JustinaRepresentation(){
     delete cliStrQueryKDB;
     delete cliInitKDB;
     delete command_response;
+    delete cliLocationPath;
+    delete cliObjectPath;
+    delete cliCategoryPath;
+    delete cliPeoplePath;
 }
 
 void JustinaRepresentation::setNodeHandle(ros::NodeHandle * nh) {
@@ -44,6 +52,11 @@ void JustinaRepresentation::setNodeHandle(ros::NodeHandle * nh) {
     cliStrQueryKDB = new ros::ServiceClient(nh->serviceClient<knowledge_msgs::StrQueryKDB>("/planning_clips/str_query_KDB"));
     cliInitKDB = new ros::ServiceClient(nh->serviceClient<knowledge_msgs::InitKDB>("/planning_clips/init_kdb"));
     command_response = new ros::Publisher(nh->advertise<knowledge_msgs::PlanningCmdClips>("/planning_clips/command_response", 1));
+    
+    cliLocationPath = new ros::ServiceClient(nh->serviceClient<knowledge_msgs::kdbFilePath>("/knowledge_representation/getLocationPath"));
+    cliObjectPath = new ros::ServiceClient(nh->serviceClient<knowledge_msgs::kdbFilePath>("/knowledge_representation/getObjectPath"));
+    cliCategoryPath = new ros::ServiceClient(nh->serviceClient<knowledge_msgs::kdbFilePath>("/knowledge_representation/getCategoryPath"));
+    cliPeoplePath = new ros::ServiceClient(nh->serviceClient<knowledge_msgs::kdbFilePath>("/knowledge_representation/getPeoplePath"));
 }
 
 void JustinaRepresentation::runCLIPS(bool enable){
@@ -95,11 +108,24 @@ void JustinaRepresentation::sendAndRunCLIPS(std::string command){
     command_sendAndRunCLIPS->publish(msg);
 }
 
-void JustinaRepresentation::getLocations(std::string path, std::map<std::string, std::vector<std::string> > &locations)
+void JustinaRepresentation::getLocations(std::string path, std::map<std::string, std::vector<std::string> > &locations, bool init)
 {
     std::cout << "Ltm.->Loading known locations from " << path << std::endl;
     std::vector<std::string> lines;
-    std::ifstream file(path.c_str());
+    std::string loc_path;
+
+        knowledge_msgs::kdbFilePath srv;
+        //srv.request.name = "test_interprete";
+        if (cliLocationPath->call(srv) && init) {
+            std::cout << "Response of interpreter:" << std::endl;
+            std::cout << "Success: " <<  srv.response.kdb_file_path << std::endl;
+            loc_path = srv.response.kdb_file_path;
+        }
+        else{
+             std::cout << "Failed to call service" << std::endl;
+             loc_path = path;
+        }
+    std::ifstream file(loc_path.c_str());
     std::string tempStr;
     while (std::getline(file, tempStr))
         lines.push_back(tempStr);
@@ -146,11 +172,23 @@ void JustinaRepresentation::getLocations(std::string path, std::map<std::string,
 
 }
 
-void JustinaRepresentation::getObjects(std::string path, std::map<std::string, std::vector<std::string> > &objects)
+void JustinaRepresentation::getObjects(std::string path, std::map<std::string, std::vector<std::string> > &objects, bool init)
 {
     std::cout << "Ltm.->Loading known locations from " << path << std::endl;
     std::vector<std::string> lines;
-    std::ifstream file(path.c_str());
+    std::string loc_path;
+        knowledge_msgs::kdbFilePath srv;
+        //srv.request.name = "test_interprete";
+        if (cliObjectPath->call(srv) && init) {
+            std::cout << "Response of interpreter:" << std::endl;
+            std::cout << "Success: " <<  srv.response.kdb_file_path << std::endl;
+            loc_path = srv.response.kdb_file_path;
+        }
+        else{
+             std::cout << "Failed to call service" << std::endl;
+             loc_path = path;
+        }
+    std::ifstream file(loc_path.c_str());
     std::string tempStr;
     while (std::getline(file, tempStr))
         lines.push_back(tempStr);
@@ -181,6 +219,14 @@ void JustinaRepresentation::getObjects(std::string path, std::map<std::string, s
         loc.push_back(parts[5]);
         loc.push_back(parts[6]);
         loc.push_back(parts[7]);
+        
+        loc.push_back(parts[8]);
+        loc.push_back(parts[9]);
+        loc.push_back(parts[10]);
+        loc.push_back(parts[11]);
+        loc.push_back(parts[12]);
+        loc.push_back(parts[13]);
+
 
         if (parseSuccess) {
             //std::cout << "LOCATIONS" << parts[0] << std::endl;
@@ -197,6 +243,139 @@ void JustinaRepresentation::getObjects(std::string path, std::map<std::string, s
     if (objects.size() < 1)
         std::cout << "Ltm.->WARNING: Cannot load known locations from file: "
             << path << ". There are no known locations." << std::endl;
+
+}
+
+void JustinaRepresentation::getPeoples(std::string path, std::map<std::string, std::vector<std::string> > &peoples, bool init){
+    std::cout << "Ltm.->Loading known peoples from " << path << std::endl;
+    std::vector<std::string> lines;
+    std::string loc_path;
+        knowledge_msgs::kdbFilePath srv;
+        //srv.request.name = "test_interprete";
+        if (cliPeoplePath->call(srv) && init) {
+            std::cout << "Response of interpreter:" << std::endl;
+            std::cout << "Success: " <<  srv.response.kdb_file_path << std::endl;
+            loc_path = srv.response.kdb_file_path;
+        }
+        else{
+             std::cout << "Failed to call service" << std::endl;
+             loc_path = path;
+        }
+    std::ifstream file(loc_path.c_str());
+    std::string tempStr;
+    while(std::getline(file,tempStr)){
+        lines.push_back(tempStr);
+    }
+
+    //Extraction of lines without comments
+    for (size_t i = 0; i < lines.size(); i++) {
+        size_t idx = lines[i].find("//");
+        if (idx != std::string::npos)
+            lines[i] = lines[i].substr(0, idx);
+    }
+
+    peoples.clear();
+    bool parseSuccess;
+    for(size_t i = 0; i < lines.size(); i++){
+
+        std::vector<std::string> parts;
+        std::vector<std::string> loc;
+        boost::split(parts, lines[i], boost::is_any_of(" ,\t"),boost::token_compress_on);
+
+        if (parts.size() < 3)
+            continue;
+
+        parseSuccess = true;
+        loc.push_back(parts[1]);
+        loc.push_back(parts[2]);
+
+        if (parseSuccess)
+            peoples[parts[0]] = loc;
+    }
+    std::cout << "Ltm.->Total number of known peoples: " << peoples.size() << std::endl;
+    for (std::map<std::string, std::vector<std::string> >::iterator it = peoples.begin(); it != peoples.end(); it++) {
+        std::cout << "Ltm.->People " << it->first << " " << it->second[0] << " " << it->second[1];
+        if (it->second.size() > 2)
+            std::cout << " " << it->second[2];
+        std::cout << std::endl;
+    }
+
+    if (peoples.size() < 1)
+        std::cout << "Ltm.->WARNING: Cannot load known people from file: "
+            << path << ". There are no known peoples." << std::endl;
+}
+
+
+void JustinaRepresentation::getCategorys(std::string path, std::map<std::string, std::vector<std::string> > &categorys, bool init){
+    std::cout << "Ltm.->Loading known categorys from " << path << std::endl;
+    std::vector<std::string> lines;
+    std::string loc_path;
+        knowledge_msgs::kdbFilePath srv;
+        //srv.request.name = "test_interprete";
+        if (cliCategoryPath->call(srv) && init) {
+            std::cout << "Response of interpreter:" << std::endl;
+            std::cout << "Success: " <<  srv.response.kdb_file_path << std::endl;
+            loc_path = srv.response.kdb_file_path;
+        }
+        else{
+             std::cout << "Failed to call service" << std::endl;
+             loc_path = path;
+        }
+    std::ifstream file(loc_path.c_str());
+    std::string tempStr;
+
+    //std::cout << "before while" << std::endl;
+
+    while (std::getline(file, tempStr))
+        lines.push_back(tempStr);
+
+    //std::cout << "before for" << std::endl;
+    for(size_t i=0; i< lines.size(); i++){
+        size_t idx = lines[i].find("//");
+        if(idx != std::string::npos)
+            lines[i]=lines[i].substr(0,idx);
+    }
+
+    //std::cout << "before clear category map" << std::endl;
+   categorys.clear();
+   bool parseSuccess;
+
+    //std::cout << "before loc pushback cycle" << std::endl;
+   for(size_t i=0; i < lines.size();i++){
+       std::vector<std::string> parts;
+       std::vector<std::string> loc;
+
+       boost::split(parts,lines[i],boost::is_any_of(" ,\t"),boost::token_compress_on);
+
+       if(parts.size()<3)
+           continue;
+
+       parseSuccess=true;
+       loc.push_back(parts[1]);
+       loc.push_back(parts[2]);
+       loc.push_back(parts[3]);
+       loc.push_back(parts[4]);
+       loc.push_back(parts[5]);
+       loc.push_back(parts[6]);
+       //loc.push_back(parts[7]);
+
+       if(parseSuccess){
+           categorys[parts[0]]=loc;
+       }
+
+   }
+
+   std::cout << "Ltm.->Total number of known categorys: " << categorys.size() << std::endl;
+   for (std::map<std::string, std::vector<std::string> >::iterator it = categorys.begin(); it != categorys.end(); it++) {
+       std::cout << "Ltm.->Category " << it->first << " " << it->second[0] << " " << it->second[1]
+                 <<" "<< it->second[2]<<" "<< it->second[3]<<" "<< it->second[4]<<" "<< it->second[5];
+       /*if (it->second.size() > 2)
+           std::cout << " " << it->second[2];*/
+       std::cout << std::endl;
+   }
+   if (categorys.size() < 1)
+       std::cout << "Ltm.->WARNING: Cannot load known locations from file: "
+           << path << ". There are no known categorys." << std::endl;
 
 }
 
@@ -228,10 +407,78 @@ void JustinaRepresentation::addObjects(std::map<std::string, std::vector<std::st
         it->second[4] = values.at(4);
         it->second[5] = values.at(5);
         it->second[6] = values.at(6);
+        it->second[7] = values.at(7);
+        it->second[8] = values.at(8);
+        it->second[9] = values.at(9);
+        it->second[10] = values.at(10);
+        it->second[11] = values.at(11);
+        it->second[12] = values.at(12);
     }
     else
         objects[name] = values;
 
+}
+
+void JustinaRepresentation::addPeoples(std::map<std::string, std::vector<std::string> >& peoples, std::string name, std::vector<std::string> values){
+    std::map<std::string , std::vector<std::string> >::iterator it;
+    it = peoples.find(name);
+    if(it != peoples.end()){
+        it->second[0]=values.at(0);
+        it->second[1]=values.at(1);
+    }else{
+        peoples[name] = values;
+     }
+}
+
+void JustinaRepresentation::addCategorys(std::map<std::string, std::vector<std::string> >& categorys, std::string name, std::vector<std::string> values){
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    it=categorys.find(name);
+    if(it != categorys.end()){
+        it->second[0]=values.at(0);
+        it->second[1]=values.at(1);
+        it->second[2]=values.at(2);
+        it->second[3]=values.at(3);
+        it->second[4]=values.at(4);
+        it->second[5]=values.at(5);
+
+    }else {
+        categorys[name]=values;
+    }
+}
+
+
+void JustinaRepresentation::deleteLocations(std::map<std::string , std::vector<std::string> >& locations, std::string name){
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    it=locations.find(name);
+    if(it != locations.end()){
+        locations.erase(it);
+    }
+}
+
+void JustinaRepresentation::deleteObjects(std::map<std::string , std::vector<std::string> >& objects, std::string name){
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    it=objects.find(name);
+    if(it != objects.end()){
+        objects.erase(it);
+    }
+}
+
+void JustinaRepresentation::deletePeoples(std::map<std::string , std::vector<std::string> >& peoples, std::string name){
+    
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    it=peoples.find(name);
+    if(it != peoples.end()){
+        peoples.erase(it);
+    }
+
+}
+
+void JustinaRepresentation::deleteCategorys(std::map<std::string , std::vector<std::string> >& categorys, std::string name){
+    std::map<std::string, std::vector<std::string> >::iterator it;
+    it=categorys.find(name);
+    if(it != categorys.end()){
+        categorys.erase(it);
+    }
 }
 
 bool JustinaRepresentation::speachInterpretation(){
@@ -642,3 +889,25 @@ bool JustinaRepresentation::getOriginAndGoalFromObject(std::string name, int id,
     }
     return false;
 }
+
+std::string JustinaRepresentation::covertLetters(std::string chain){
+  // std::cout<<"\n Converted Chain :"<<chain<<std::endl;
+
+   std::string convertedWord=" ";
+   int tam=chain.size();
+   char arrayChain[100]={'\0'};
+   char arrayChainAux[100]={'\0'};
+   for(int i=0; i<chain.size();i++){
+       arrayChain[i]=chain[i];
+   }
+   for (int index = 0 ; arrayChain[index]!= '\0'/* index < chain.size()*/; ++index){
+       arrayChainAux[index] = tolower(arrayChain[index]);    
+   }
+   //std::cout<<"\n Converted Array Chain :"<<arrayChainAux<<std::endl;
+   convertedWord=arrayChainAux;
+   //std::cout<<"\n Converted String Chain :"<<convertedWord<<std::endl;
+   
+   return convertedWord;
+}
+
+

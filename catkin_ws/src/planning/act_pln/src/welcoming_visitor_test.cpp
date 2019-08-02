@@ -866,7 +866,7 @@ int main(int argc, char** argv)
                 boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
                 
                 //JustinaTasks::guideAPerson(location, 50000000);
-                JustinaTasks::guideAPerson(location, 50000000, 1.5, true, plumberNotAllowed);
+                JustinaTasks::guideAPerson(location, 50000000, 1.5, false, 0.0, true, plumberNotAllowed);
                 //JustinaNavigation::moveDistAngle(0.0, 3.14159, 10000);
                 //ros::Duration(1.0).sleep();
                 if(followV){
@@ -1048,8 +1048,7 @@ int main(int argc, char** argv)
                 else{
                     JustinaManip::startHdGoTo(0.0, -0.4);
                     JustinaHRI::say("Ready, now wait for the next instruction");
-                    ros::Duration(2.0).sleep();
-                    if(JustinaTasks::graspBagHand(faces.recog_faces[0].face_centroid, withLeftArm))
+                    if(JustinaTasks::graspObjectFromHand(faces.recog_faces[0].face_centroid, "mail",  withLeftArm))
                         std::cout << "test succesfully" << std::endl;
                     else
                     {

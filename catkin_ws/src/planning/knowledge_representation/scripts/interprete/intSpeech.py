@@ -25,23 +25,30 @@ def set_mapping(mapping):
     egprs_interpreter.set_mapping(mapping)    
 
 def separaTask(cadena):
+        global ask_info_index 
 	spc = cadena.split("(task")
 	spc.remove('')
 	s = []
 	step = 1
 	question = 1
 	location = '' 
+	deliver_location = '' 
 	task_object = ''
 	get_object = False
 	handover_object = False
 	update_location = False
 	find_person = False
 	deliver_object = False
+        ask_info = False 
         no_get_object_many_room = True
 	fpush = True
 	tu = 2
 	tempStep = 1
+        ask_info_index = 0;
+        origin_place = False;
 	no_man_guide = True
+        obj_inc = False
+	set_cutlery = False
 	for i in spc:
 		temp  = i.split("(")
 		temp.remove(' ')
@@ -63,17 +70,28 @@ def separaTask(cadena):
                                         no_get_object_many_room = False
 				elif firstparam[1] == 'update_object_location':
 					update_location = True
+                                        origin_place = True
 				elif firstparam[1] == 'handover_object':
 					 handover_object = True
 				elif firstparam[1] == 'find_person_in_room':
 					find_person = True
 				elif firstparam[1] == 'deliver_in_position':
 					deliver_object = True
+				elif firstparam[1] == 'set_cutlery':
+					set_cutlery = True
+				elif firstparam[1] == 'find_object_in_room':
+					origin_place = False
 				elif firstparam[1] == 'question':
 					temp2 = firstparam[0] + " " + "question_" + str(question) + " " + firstparam[2]
 					if paramTam > 3:
 						temp2 = temp2 + " " + firstparam[3]
 					question = question + 1
+                                        obj_inc = False 
+                                        if(firstparam[2] == 'object' or firstparam[2] == 'object_place' or firstparam[2] == 'place_destiny'):
+                                            obj_inc = True  
+                                elif firstparam[1] == 'ask_info':
+                                        ask_info = True;
+                                        ask_info_index = ask_info_index + 1
 			if paramTam > 2:
 				if firstparam[2] == 'place_destiny':
 					if step == tempStep + tu + 1:
@@ -88,6 +106,8 @@ def separaTask(cadena):
 						tu = 2
 						#print "TEST TEMPSTEP " + str(tempStep)
 				elif firstparam[2] == 'follow_place_origin':
+                                        if origin_place == False :
+                                            location = ''
 					if step == tempStep + tu:
 						#step = step -1
 						#fpush = False
@@ -119,16 +139,36 @@ def separaTask(cadena):
 				else:
 					find_person = False
 			elif firstparam[0] == 'params' and deliver_object:
-				temp2 = firstparam[0] + " " + task_object + " " + firstparam[1]
+				temp2 = firstparam[0] + " " + task_object #+ " " + firstparam[1]
+				for i in range(1,len(firstparam)):
+                                    temp2 = temp2 + " " + firstparam[i]
+                                if len(firstparam) > 1 :
+                                    deliver_location = firstparam[1]
 				deliver_object = False
+			elif firstparam[0] == 'params' and set_cutlery:
+				temp2 = temp2 + " " + task_object + " " + deliver_location
+                                set_cutlery = False 
 				
 			s.append(temp2)
 			print "PUSH: " + temp2
-		if fpush:
+		if fpush and not(ask_info):
 			q.pushC(s)
 			planQ.pushC(s)
+                elif ask_info:
+                        if  origin_place and not obj_inc:
+                            origin_place = False
+                            step = step - 1
+                            ask_info_index = ask_info_index - 1
+                            ask_info = False
+                        else:
+                            print 'insert element ask info index: ' + str(ask_info_index)
+                            q.insertElement(s, ask_info_index)
+                            planQ.insertElement(s, ask_info_index)
+                            ask_info = False
+                            obj_inc = False
 		fpush = True
 		s = []
+        q.showQueue();
 
 def cmd_task(c):
 	args = ''
@@ -149,6 +189,7 @@ def cmd_task(c):
 		return (0, "No_Task")
 
 def cmd_int(c):
+        global ask_info_index 
 	try:
 		cadena  = cmdQ.popC()
 	except:
@@ -223,12 +264,14 @@ def cmd_int(c):
 		return (0, args)
 	else:
 		q.empty()
+                planQ.empty()
                 instruction = 'false'
                 if result.find('(inst') != -1:
                     if result.find('(task') != -1:
                         instruction = 'false'
                     result = result.replace('(inst', '(task')
                     instruction = 'true'
+                ask_info_index = 0
 		separaTask(result)
 		args = temp1.replace(' ','_')
                 if instruction == 'true':
@@ -280,6 +323,7 @@ def cmd_int_open(c):
 		return (0, args)
 	else:
 		q.empty()
+                planQ.empty()
 		separaTask(interpreted_command)
 		args = temp1.replace(' ','_')
 		#return Response.FromCommandObject(c, True, args)
@@ -387,7 +431,7 @@ def cmd_conf(c):
 	temp1 = temp2.lstrip("[('")
 	print 'Resp ' + temp1
 	
-	if temp1 == 'robot yes':
+	if temp1 == 'robot yes' or temp1 == 'justina yes':
 		steps = q.lenC()
 		plan_name_id = randrange(10000)
 		args = "plan-" + str(plan_name_id) + " " + str(steps)

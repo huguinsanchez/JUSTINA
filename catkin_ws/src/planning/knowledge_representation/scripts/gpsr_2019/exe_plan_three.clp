@@ -182,14 +182,14 @@
 
 ;;;;;;;;;;;  introduce person to people
 (defrule exe-plan-introduce-person 
-	(plan (name ?name) (number ?num-pln) (status active) (actions introduce-person ?person ?php ?place)(duration ?t))
+	(plan (name ?name) (number ?num-pln) (status active) (actions introduce-person ?p ?person ?php ?place)(duration ?t))
 	=>
-        (bind ?command (str-cat "" ?person " " ?php  " " ?place ""))
+        (bind ?command (str-cat "" ?p " " ?person " " ?php  " " ?place ""))
 	(assert (send-blackboard ACT-PLN introduce_person ?command ?t 4))
 )
 
 (defrule exe-plan-introduced-person 
-        ?f <-  (received ?sender command introduce_person ?person ?php ?place 1)
+        ?f <-  (received ?sender command introduce_person ?p ?person ?php ?place 1)
         ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions introduce-person $?params))
         =>
         (retract ?f)
@@ -197,7 +197,7 @@
 )
 
 (defrule exe-plan-no-introduced-person
-        ?f <-  (received ?sender command introduce_person ?person ?php ?place 0)
+        ?f <-  (received ?sender command introduce_person ?p ?person ?php ?place 0)
         ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions introduce-person $?params))
 	?f3 <- (item (name speech))
         =>
@@ -231,14 +231,14 @@
 ;;;;;;
 
 (defrule exe-plan-guide-to-taxi 
-	(plan (name ?name) (number ?num-pln) (status active) (actions guide_to_taxi ?person)(duration ?t))
+	(plan (name ?name) (number ?num-pln) (status active) (actions guide_to_taxi ?person ?question)(duration ?t))
 	=>
-        (bind ?command (str-cat "" ?person ""))
+        (bind ?command (str-cat "" ?person " " ?question ""))
 	(assert (send-blackboard ACT-PLN guide_to_taxi ?command ?t 4))
 )
 
 (defrule exe-plan-guided_to_taxi
-        ?f <-  (received ?sender command guide_to_taxi ?person 1)
+        ?f <-  (received ?sender command guide_to_taxi ?person ?question 1)
         ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions guide_to_taxi $?params))
         =>
         (retract ?f)
@@ -246,11 +246,58 @@
 )
 
 (defrule exe-plan-no-guided-to-taxi
-        ?f <-  (received ?sender command guide_to_taxi ?person 0)
+        ?f <-  (received ?sender command guide_to_taxi ?person ?question 0)
         ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions guide_to_taxi $?params))
         =>
         (retract ?f)
 	(modify ?f2 (status accomplished))
 )
 
-;;;;;;;;;;;;;
+;;;;;;;;;;;;; clean up
+(defrule exe-plan-clean-up 
+	(plan (name ?name) (number ?num-pln) (status active) (actions clean_up ?room)(duration ?t))
+	=>
+        (bind ?command (str-cat "" ?room ""))
+	(assert (send-blackboard ACT-PLN clean_up ?command ?t 4))
+)
+
+(defrule exe-plan-cleaned-up 
+        ?f <-  (received ?sender command clean_up ?room 1)
+        ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions clean_up $?params))
+        =>
+        (retract ?f)
+        (modify ?f2 (status accomplished))
+)
+
+(defrule exe-plan-no-cleaned-up
+        ?f <-  (received ?sender command clean_up ?room 0)
+        ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions clean_up $?params))
+        =>
+        (retract ?f)
+	(modify ?f2 (status accomplished))
+)
+
+;;;;;;;;;;;;;; take out the garbage
+(defrule exe-plan-take-out-garbage 
+	(plan (name ?name) (number ?num-pln) (status active) (actions take_out_garbage ?garbage)(duration ?t))
+	=>
+        (bind ?command (str-cat "" ?garbage ""))
+	(assert (send-blackboard ACT-PLN take_out_garbage ?command ?t 4))
+)
+
+(defrule exe-plan-taked_out_garbage 
+        ?f <-  (received ?sender command take_out_garbage ?garbage 1)
+        ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions take_out_garbage $?params))
+        =>
+        (retract ?f)
+        (modify ?f2 (status accomplished))
+)
+
+(defrule exe-plan-no-taked-up-garbage
+        ?f <-  (received ?sender command take_out_garbage ?garbage 0)
+        ?f2 <- (plan (name ?name) (number ?num-pln)(status active)(actions take_out_garbage $?params))
+        =>
+        (retract ?f)
+	(modify ?f2 (status accomplished))
+)
+;;;;;;;;;;;;;;;;;;;;;;

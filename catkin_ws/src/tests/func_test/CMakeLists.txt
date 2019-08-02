@@ -257,6 +257,16 @@ target_link_libraries(place_object_test
 
 add_dependencies(place_object_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+############
+add_executable(place_object_shelf_test
+  src/place_object_shelf_test.cpp
+)
+
+target_link_libraries(place_object_shelf_test
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(place_object_shelf_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ############
 add_executable(follow_person_test
@@ -441,3 +451,69 @@ target_link_libraries(pointing_to_location
 )
 
 add_dependencies(pointing_to_location ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+###########
+add_executable(find_lines_test
+  src/find_lines_test.cpp
+)
+
+target_link_libraries(find_lines_test
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(find_lines_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+###########
+add_executable(find_yolo_test
+  src/find_yolo_test.cpp
+)
+
+target_link_libraries(find_yolo_test
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(find_yolo_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+###########
+add_executable(find_all_yolo_test
+  src/find_all_yolo_test.cpp
+)
+
+target_link_libraries(find_all_yolo_test
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(find_all_yolo_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+###########
+add_executable(findGenderGesturePerson
+  src/findGenderGesturePerson.cpp
+)
+
+target_link_libraries(findGenderGesturePerson
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(findGenderGesturePerson ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+###########
+add_executable(introduce_to_people
+	src/introduce_to_people.cpp
+)
+
+target_link_libraries(introduce_to_people
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(introduce_to_people ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+###########
+#add_executable(p_and_g_complement
+#	src/p_and_g_complement.cpp
+#)
+
+#target_link_libraries(p_and_g_complement
+#  ${catkin_LIBRARIES}
+#)
+
+#add_dependencies(p_and_g_complement ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

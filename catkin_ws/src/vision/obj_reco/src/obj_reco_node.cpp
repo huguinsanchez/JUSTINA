@@ -24,6 +24,7 @@
 #include "std_msgs/Empty.h"
 
 #include "geometry_msgs/Point.h"
+#include "geometry_msgs/Point32.h"
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
 
@@ -36,6 +37,7 @@
 #include "vision_msgs/FindLines.h"
 #include "vision_msgs/FindPlane.h"
 #include "vision_msgs/DetectGripper.h"
+#include "vision_msgs/SetTrainingDir.h"
 
 #include "justina_tools/JustinaTools.h"
 #include "justina_tools/JustinaRepresentation.h"
@@ -54,6 +56,9 @@
 // Includes for YOLO object recog
 #include "vision_msgs/CheckForObjectsAction.h"
 #include "actionlib/client/simple_action_client.h"
+
+// Includes for DNN object recog
+#include "vision_msgs/ObjectRecognize.h"
 
 cv::VideoCapture kinect;
 cv::Mat lastImaBGR;
@@ -76,6 +81,7 @@ bool showImgYOLO = false;
 
 std::string dirToSaveFiles   = "";
 std::string data_base_folder = "";
+std::string dir_type = "";
 
 ros::NodeHandle* node; 
 
@@ -103,6 +109,7 @@ ros::ServiceServer srv_trainByHeight;
 ros::ServiceServer srvDetectGripper;
 ros::ServiceServer srvExtractObjectAbovePlanes;
 ros::ServiceServer srvEXtractObjectWithPlanes;
+ros::ServiceServer srvSetTrainingDir;
 
 //YOLO object recog
 ros::ServiceServer srvDetectObjsYOLO;
@@ -113,6 +120,9 @@ ros::Publisher pubDetectObjsYOLO;
 ros::Subscriber subImgDetectObjsYOLO;
 //Action client for YOLO object recog
 actionlib::SimpleActionClient<vision_msgs::CheckForObjectsAction> * actCltForObjects;
+
+//DNN Object recog
+ros::ServiceClient cltObjectRecognize;
 
 //test
 ros::ServiceServer srvVotObjs;
@@ -133,7 +143,7 @@ bool callback_srvFindLines(vision_msgs::FindLines::Request &req, vision_msgs::Fi
 bool callback_srvFindPlane(vision_msgs::FindPlane::Request &req, vision_msgs::FindPlane::Response &resp);
 bool callback_srvFindTable(vision_msgs::FindPlane::Request &req, vision_msgs::FindPlane::Response &resp);
 bool callback_srvFindFreePlane(vision_msgs::FindPlane::Request &req, vision_msgs::FindPlane::Response &resp);
-
+bool callback_srvSetTrainingDir(vision_msgs::SetTrainingDir::Request &req, vision_msgs::SetTrainingDir::Response &resp);
 //test
 bool callback_srvVotationObjects(vision_msgs::DetectObjects::Request &req, vision_msgs::DetectObjects::Response &resp);
 bool callback_srvTFObjectDetect(vision_msgs::DetectObjects::Request &req, vision_msgs::DetectObjects::Response &resp);
@@ -252,7 +262,42 @@ void cb_sub_trainGripper(const std_msgs::Empty::ConstPtr msg)
 
 }
 
+void drawInstance(cv::Mat image, vision_msgs::MaskBoundingBoxes mrcnnBoxes)
+{
+    for(int i = 0; i < mrcnnBoxes.bounding_boxes.size(); i++)
+    {
+        std::string label = mrcnnBoxes.bounding_boxes[i].Class;
+        float score = mrcnnBoxes.bounding_boxes[i].probability;
+        float x1 = mrcnnBoxes.bounding_boxes[i].xmin;
+        float y1 = mrcnnBoxes.bounding_boxes[i].ymin;
+        float x2 = mrcnnBoxes.bounding_boxes[i].xmax;
+        float y2 = mrcnnBoxes.bounding_boxes[i].ymax;
+        cv::Scalar color(mrcnnBoxes.bounding_boxes[i].color.x, mrcnnBoxes.bounding_boxes[i].color.y, mrcnnBoxes.bounding_boxes[i].color.z);
+        cv::rectangle(image, cv::Point(x1, y1), cv::Point(x2, y2), color, 4);
+        
+        std::stringstream ss;
+        if(score > 0)
+            ss << label << " " << score * 100;
+        //caption = "%s %d%%"%(label, int(score*100)) if score else label
+        float yyy = y1 -16;
+        if(yyy < 0)
+            yyy = 0;
 
+        cv::putText(image, ss.str(), cv::Point(x1, yyy), cv::FONT_HERSHEY_SIMPLEX, 0.75, color,2);
+        cv::Mat imageMask = cv::Mat::zeros(image.size(), image.type());
+
+        for(int j = 0; j < mrcnnBoxes.bounding_boxes[i].contours.size(); j++){
+            std::vector<cv::Point> contour_poly;
+            for(int k = 0; k < mrcnnBoxes.bounding_boxes[i].contours[j].points.size(); k++) 
+                contour_poly.push_back(cv::Point(mrcnnBoxes.bounding_boxes[i].contours[j].points[k].x, mrcnnBoxes.bounding_boxes[i].contours[j].points[k].y));
+            const cv::Point *pts = (const cv::Point*) cv::Mat(contour_poly).data;
+            int npts = cv::Mat(contour_poly).rows;
+            cv::polylines(image, &pts, &npts, 1, true, color, 2, CV_AA, 0);
+            cv::fillPoly(imageMask, &pts, &npts, 1, color, 8, 0);
+        }
+        cv::addWeighted(image, 1.0, imageMask, 0.5, 0.0, image);
+    }
+}
 
 // MAIN
 int main(int argc, char** argv)
@@ -285,6 +330,8 @@ int main(int argc, char** argv)
     srvDetectGripper        = n.advertiseService("/vision/obj_reco/gripper"         , callback_srvDetectGripper);
     srvExtractObjectAbovePlanes        = n.advertiseService("/vision/obj_reco/ext_objects_above_planes"      , callback_srvExtractObjectsAbovePlanes);
     srvEXtractObjectWithPlanes = n.advertiseService("/vision/obj_reco/ext_objects_with_planes", callback_srvExtractObjectsWithPlanes);
+    srvSetTrainingDir = n.advertiseService("/vision/obj_reco/set_training_dir", callback_srvSetTrainingDir);
+    //srvSetTrainingDir       = n.advertiseService("/vision/obj_reco/setTrainingDir",   callback_srvSetTrainingDir);
 
     srvFindLines            = n.advertiseService("/vision/line_finder/find_lines_ransac"    , callback_srvFindLines);
     srvFindPlane            = n.advertiseService("/vision/geometry_finder/findPlane"        , callback_srvFindPlane);
@@ -308,6 +355,9 @@ int main(int argc, char** argv)
     pubDetectObjsYOLO       = n.advertise<vision_msgs::VisionObjectList>("/vision/obj_reco/get_det_objs_YOLO", 1);
     //Action client for YOLO object recog
     actCltForObjects = new actionlib::SimpleActionClient<vision_msgs::CheckForObjectsAction>("/vision/darknet_ros/check_for_objects", true);
+    
+    // DNN Object recognize
+    cltObjectRecognize      = n.serviceClient<vision_msgs::ObjectRecognize>("/vision/mask_rcnn/recognize");
 
     ros::Rate loop(30);
 
@@ -317,7 +367,7 @@ int main(int argc, char** argv)
         data_base_folder = ros::package::getPath("obj_reco") + std::string("/TrainingDir");  
 
     objReco.TrainingDir = data_base_folder; 
-    objReco.LoadTrainingDir();
+    objReco.LoadTrainingDir(data_base_folder);
     ObjExtractor::LoadValueGripper();  
     JustinaRepresentation::setNodeHandle(&n); 
 
@@ -326,6 +376,26 @@ int main(int argc, char** argv)
     char keyStroke = 0;
     while(ros::ok())
     {
+
+        // This is only for test the mask rcnn
+        /*cv::Mat imaBGR;
+        cv::Mat imaPCL;
+        if (GetImagesFromJustina(imaBGR,imaPCL)){
+            sensor_msgs::Image container;
+            cv_bridge::CvImage cvi_mat;
+            cvi_mat.encoding = sensor_msgs::image_encodings::BGR8;
+            cvi_mat.image = imaBGR;
+            cvi_mat.toImageMsg(container);
+            vision_msgs::ObjectRecognize srv;
+            srv.request.input_image = container;
+            if(cltObjectRecognize.call(srv)){
+                std::cout << "Success mask rcnn object detector" << std::endl;
+                drawInstance(imaBGR, srv.response.recognitions);
+                cv::imshow("Mask RCNN" , imaBGR);
+            }else
+                std::cout << "Error mask rcnn object detector" << std::endl;
+        }*/
+
         if(enableGripperPose){
             //std::cout << "Calculating the gripper position." << std::endl;
             cv::Mat imaBGR;
@@ -810,7 +880,7 @@ bool callback_srvFindLines(vision_msgs::FindLines::Request &req, vision_msgs::Fi
     //cv::Mat bgrImg = lastImaBGR.clone();
     //cv::Mat xyzCloud = lastImaPCL.clone();
 
-    ObjExtractor::DebugMode = debugMode;
+    ObjExtractor::DebugMode = debugMode;//set to tru to display windows
     cv::Vec4i pointsLine = ObjExtractor::GetLine( xyzCloud );
     if( pointsLine == cv::Vec4i(0,0,0,0) )
     {
@@ -1696,4 +1766,26 @@ void callback_subImgDetectObjsYOLO(const sensor_msgs::Image::ConstPtr &msg)
         }
         cv::imshow("YOLO V3", cv_ptr->image);
     }
+}
+
+bool callback_srvSetTrainingDir(vision_msgs::SetTrainingDir::Request &req, vision_msgs::SetTrainingDir::Response &resp)
+{
+    dir_type =  data_base_folder + req.category;
+    if( boost::filesystem::exists(dir_type) )
+    {
+    
+        objReco.LoadTrainingDir(dir_type);
+        std::cout << "obj_reco_node.->load successfully the path: " << dir_type << std::endl;
+        return true;
+        
+    }
+
+    else
+    {
+        std::cout << "obj_reco_node.-> Error!! can't load the path: " << dir_type << std::endl;
+        return false;
+    }
+
+    
+
 }
