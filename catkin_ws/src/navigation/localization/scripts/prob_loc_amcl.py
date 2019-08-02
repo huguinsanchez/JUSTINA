@@ -99,7 +99,7 @@ def main(file):
 		rate.sleep()
 
 if __name__ == '__main__':
-	file="/home/hugo/tesis/JUSTINA/catkin_ws/src/planning/knowledge/navigation/known_delimitation_hugo.txt"
+	file="/home/biorobotica/hugo_tesis/JUSTINA/catkin_ws/src/planning/knowledge/navigation/known_delimitation_hugo.txt"
 	try:
 	    if "-f" in sys.argv:
         	file=sys.argv[sys.argv.index("-f") + 1]
