@@ -1,0 +1,14 @@
+float64 lx
+float64 ly
+float64 ux
+float64 uy
+float64 mean_x
+float64 mean_y
+float64 step
+float64 cov00
+float64 cov01
+float64 cov10
+float64 cov11
+----------------------------
+
+float64 prob

@@ -2,4 +2,4 @@ string room
 
 ----------------
 
-std_msgs/Float32 prob
+std_msgs/Float64 prob

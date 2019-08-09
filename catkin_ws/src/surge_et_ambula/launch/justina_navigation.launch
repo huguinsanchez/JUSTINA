@@ -88,6 +88,8 @@
 				<remap from="dynamic_map" to="/navigation/localization/static_map"/>
 			</node>
 			<node name="prob_loc_amcl" pkg="localization" type="prob_loc_amcl.py"  args=" -f $(find knowledge)/navigation/known_delimitation_hugo.txt" respawn="true" output="screen"/>
+
+			<node name="mvncdf" pkg="localization" type="mvncdf_server" respawn="true" output="screen"/>
 		</group>
 
 		<group ns="path_planning">
