@@ -8,6 +8,12 @@
 #include "boost/filesystem.hpp"
 #include "DetectedObject.hpp"
 #include <ros/package.h>
+#include <iterator> 
+#include <map>
+#include <fstream>
+#include <bits/stdc++.h> 
+#include <boost/algorithm/string.hpp> 
+#include <vector>
 
 class ObjRecognizer
 {
@@ -35,7 +41,9 @@ private:
     std::vector<int> trainingIds; 
     std::vector<float> trainingHeights; 
     std::vector<cv::Mat> trainingHistos; 
-    std::vector< std::vector< cv::Point2f > > trainingCont2D; 
+    std::vector< std::vector< cv::Point2f > > trainingCont2D;
+    std::map<std::string, std::vector<std::string> > object_locs;
+    bool no_base_knowledge;
 
     cv::Mat CalculateHistogram( cv::Mat bgrImage, cv::Mat mask ); 
 };

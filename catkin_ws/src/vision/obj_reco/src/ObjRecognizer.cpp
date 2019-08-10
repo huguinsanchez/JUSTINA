@@ -40,6 +40,36 @@ ObjRecognizer::ObjRecognizer(int binNo)
 			fs.release(); 
 		}
 	}
+	std::ifstream file;
+	std::string knowledgeDir=ros::package::getPath("obj_reco")+ "/vision";
+	std::string knowledgeFile = knowledgeDir+"/GCM.txt";
+	std::string line;
+	std::vector<std::string> result;
+	if( !boost::filesystem::exists(configDir)){
+		boost::filesystem::create_directory(configDir);
+		std::cout<<"GMC doesn\'t have base knowledge"<<std::endl;
+		this->no_base_knowledge=true; 
+	}
+	else{
+		/*this->no_base_knowledge=false;
+		file.open(knowledgeFile.c_str());
+		while (!file.eof()){
+			getline(file, line);
+			boost::split(result, line, boost::is_any_of(" "));
+			line=result[0];
+			result.erase(result.begin()+1);
+			this->object_locs.insert(std::pair<std::string, std::vector<std::string> >(line, result));
+		}
+		file.close();
+		std::map<std::string, std::vector<std::string> >::iterator it;
+		/*for(it=this->object_locs.begin();it!=this->object_locs.end(); it++){
+			std::cout<<it->first<<" :"<<std::endl;
+			/*for(size_t i=0; i<it->second.size();i++){
+				std::cout<<"\t"<<it->second[i]<<std::endl;
+
+			}
+		}*/
+	}
 }
 
 ObjRecognizer::ObjRecognizer()
@@ -78,6 +108,37 @@ ObjRecognizer::ObjRecognizer()
 
 			fs.release(); 
 		}
+	}
+
+	std::ifstream file;
+	std::string knowledgeDir=ros::package::getPath("obj_reco")+ "/vision";
+	std::string knowledgeFile = knowledgeDir+"/GCM.txt";
+	std::string line;
+	std::vector<std::string> result;
+	if( !boost::filesystem::exists(configDir)){
+		boost::filesystem::create_directory(configDir);
+		std::cout<<"GMC doesn\'t have base knowledge"<<std::endl;
+		this->no_base_knowledge=true; 
+	}
+	else{
+		/*this->no_base_knowledge=false;
+		file.open(knowledgeFile.c_str());
+		while (!file.eof()){
+			getline(file, line);
+			boost::split(result, line, boost::is_any_of(" "));
+			line=result[0];
+			result.erase(result.begin()+1);
+			this->object_locs.insert(std::pair<std::string, std::vector<std::string> >(line, result));
+		}
+		file.close();
+		std::map<std::string, std::vector<std::string> >::iterator it;
+		for(it=this->object_locs.begin();it!=this->object_locs.end(); it++){
+			std::cout<<it->first<<" :"<<std::endl;
+			/*for(size_t i=0; i<it->second.size();i++){
+				std::cout<<"\t"<<it->second[i]<<std::endl;
+
+			}
+		}*/
 	}
 
 }

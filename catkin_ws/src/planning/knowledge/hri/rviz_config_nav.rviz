@@ -537,7 +537,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /knowldege/areas_marker
+      Marker Topic: /knowledge/areas_marker
       Name: Marker
       Namespaces:
         areas_delimitation: true

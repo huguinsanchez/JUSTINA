@@ -682,7 +682,7 @@ int main(int argc, char ** argv) {
     ros::Publisher pubInitKnownLoc = nh.advertise<std_msgs::Bool>(
             "/knowledge/init_location_markers", 1);
     ros::Publisher pubAreasMarker = nh.advertise<visualization_msgs::Marker>(
-            "/knowldege/areas_marker", 1);
+            "/knowledge/areas_marker", 1);
     ros::Subscriber subEditKnownLoc = nh.subscribe(
             "/knowledge/edit_known_loc", 1, callbackEnableKnownLocations);
     ros::ServiceServer service = nh.advertiseService(
