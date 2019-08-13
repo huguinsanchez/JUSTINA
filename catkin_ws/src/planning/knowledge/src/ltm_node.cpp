@@ -9,6 +9,7 @@
 #include "knowledge_msgs/IsPointInKnownArea.h"
 #include "knowledge_msgs/GetVisitLocationsPath.h"
 #include "knowledge_msgs/GetRoomOfPoint.h"
+#include "knowledge_msgs/getAllRooms.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -27,6 +28,8 @@
 
 #include <tf/transform_broadcaster.h>
 #include <tf/tf.h>
+
+std::vector<std::string> rooms;
 
 using namespace visualization_msgs;
 
@@ -273,6 +276,7 @@ bool loadKnownDelimitation(std::string path, std::map<std::string, std::pair<std
     std::vector<std::string> lines;
     std::ifstream file(path.c_str());
     std::string tempStr;
+    rooms.clear();
     while (std::getline(file, tempStr))
         lines.push_back(tempStr);
 
@@ -300,6 +304,7 @@ bool loadKnownDelimitation(std::string path, std::map<std::string, std::pair<std
         if(!(parts[1].compare("furniture") == 0 || parts[1].compare("room") == 0))
             continue;
         if(parts[1].compare("room") == 0){
+            rooms.push_back(parts[0]);
             int div = parts.size() % 2;
             if(div != 0)
                 continue;
@@ -654,6 +659,15 @@ bool getRoomOfPoint(knowledge_msgs::GetRoomOfPoint::Request &req, knowledge_msgs
     return true;
 }
 
+bool getAllRooms(knowledge_msgs::getAllRooms::Request &req, knowledge_msgs::getAllRooms::Response &res){
+    if(rooms.size()<1){
+        return false;
+    }else{
+        res.rooms=rooms;
+        return true;
+    }
+}
+
 int main(int argc, char ** argv) {
 
     std::cout << "INITIALIZING KNOWN LOCATIONS." << std::endl;
@@ -701,6 +715,8 @@ int main(int argc, char ** argv) {
             "/knowledge/save_in_file", 1, callbackSaveInFile);
     ros::Subscriber subDelete = nh.subscribe(
             "/knowledge/delete_known_locations", 1, callbackDeleteKnownLoc);
+    ros::ServiceServer serviceGetAllRooms = nh.advertiseService(
+            "/knowledge/get_all_rooms", getAllRooms);
 
     if (!loadKnownLocations(locationsFilePath, locations))
         std::cout << "ltm_node.-> Can not load file of known locations." << std::endl;

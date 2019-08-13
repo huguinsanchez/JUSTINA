@@ -24,6 +24,7 @@ ros::ServiceClient * JustinaKnowledge::cliGetVisitLocationsPath;
 ros::ServiceClient * JustinaKnowledge::cliGetPlanPath;
 ros::ServiceClient * JustinaKnowledge::cliGetRoomOfPoint;
 ros::ServiceClient * JustinaKnowledge::cliGetProbOfBeingRoom;
+ros::ServiceClient * JustinaKnowledge::cliGetAllRooms;
 bool JustinaKnowledge::updateKnownLoc = false;
 bool JustinaKnowledge::initKnownLoc = false;
 tf::TransformListener* JustinaKnowledge::tf_listener;
@@ -43,6 +44,7 @@ JustinaKnowledge::~JustinaKnowledge(){
     delete cliGetVisitLocationsPath;
     delete cliGetPlanPath;
     delete cliGetProbOfBeingRoom;
+    delete cliGetAllRooms;
     delete tf_listener;
 }
 
@@ -93,6 +95,9 @@ void JustinaKnowledge::setNodeHandle(ros::NodeHandle * nh) {
     cliGetProbOfBeingRoom = new ros::ServiceClient(
             nh->serviceClient<navig_msgs::prob_localization>(
                 "/navigation/localization/prob_location"));
+    cliGetAllRooms = new ros::ServiceClient(
+            nh->serviceClient<knowledge_msgs::getAllRooms>(
+                "/knowledge/get_all_rooms"));
     tf_listener->waitForTransform("map", "base_link", ros::Time(0), ros::Duration(5.0));
 }
 
@@ -444,7 +449,7 @@ std::string JustinaKnowledge::getRoomOfPoint(float x, float y){
     return srv.response.location.data;
 }
 
-bool JustinaKnowledge::getProbOfBeingRoom(std::string room, float &prob){
+bool JustinaKnowledge::getProbOfBeingRoom(std::string room, double &prob){
     navig_msgs::prob_localization srv;
     srv.request.room=room;
     if(!cliGetProbOfBeingRoom->call(srv)){
@@ -452,5 +457,31 @@ bool JustinaKnowledge::getProbOfBeingRoom(std::string room, float &prob){
         return false;
     }
     prob=srv.response.prob.data;
+    return  true;
+}
+
+bool JustinaKnowledge::getAllRooms(std::vector<std::string> &rooms){
+    knowledge_msgs::getAllRooms srv;
+    if(!cliGetAllRooms->call(srv)){
+        ROS_ERROR("Failed to call service get all rooms");
+        return false;
+    }
+    rooms=srv.response.rooms;
+    return  true;
+}
+
+bool JustinaKnowledge::getProbOfBeingRoom(std::vector<std::string> room, std::vector<double> &prob){
+    navig_msgs::prob_localization srv;
+    prob.clear();
+    prob.resize(room.size());
+    for(size_t i=0; i<room.size();++i){
+        srv.request.room=room[i];
+        if(!cliGetProbOfBeingRoom->call(srv)){
+            ROS_ERROR("Failed to call service prob_location");
+            prob[i]=1.0;
+            //return false;
+        }else
+            prob[i]=srv.response.prob.data;
+    }
     return  true;
 }

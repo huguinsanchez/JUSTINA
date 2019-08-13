@@ -179,7 +179,7 @@ public:
     static void startObjectFindingWindow();
     static void stopObjectFindingWindow();
     static bool detectObjects(std::vector<vision_msgs::VisionObject>& recoObjList, bool saveFiles = false);
-    static bool detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList,std::string location, bool saveFiles = false);
+    static bool detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList, std::vector<std::string> rooms, std::vector<double> probs,std::string location, bool saveFiles);
     static bool detectAllObjects(std::vector<vision_msgs::VisionObject>& recoObjList, bool saveFiles = false);
     static bool detectAllObjectsVot(std::vector<vision_msgs::VisionObject>& recoObjList, sensor_msgs::Image &image, int iterations = 1);
     //Action client for YOLO object recog

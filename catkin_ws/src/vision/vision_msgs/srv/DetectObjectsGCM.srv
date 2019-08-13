@@ -1,5 +1,7 @@
 bool saveFiles
 int32 iterations
+string[] rooms
+float64[] probs
 string location
 ---
 vision_msgs/VisionObject[] recog_objects

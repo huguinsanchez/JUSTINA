@@ -41,7 +41,7 @@ ObjRecognizer::ObjRecognizer(int binNo)
 		}
 	}
 	std::ifstream file;
-	std::string knowledgeDir=ros::package::getPath("obj_reco")+ "/vision";
+	std::string knowledgeDir=ros::package::getPath("knowledge")+ "/vision";
 	std::string knowledgeFile = knowledgeDir+"/GCM.txt";
 	std::string line;
 	std::vector<std::string> result;
@@ -51,24 +51,32 @@ ObjRecognizer::ObjRecognizer(int binNo)
 		this->no_base_knowledge=true; 
 	}
 	else{
-		/*this->no_base_knowledge=false;
+		this->no_base_knowledge=false;
 		file.open(knowledgeFile.c_str());
-		while (!file.eof()){
-			getline(file, line);
-			boost::split(result, line, boost::is_any_of(" "));
-			line=result[0];
-			result.erase(result.begin()+1);
-			this->object_locs.insert(std::pair<std::string, std::vector<std::string> >(line, result));
-		}
-		file.close();
-		std::map<std::string, std::vector<std::string> >::iterator it;
-		/*for(it=this->object_locs.begin();it!=this->object_locs.end(); it++){
-			std::cout<<it->first<<" :"<<std::endl;
-			/*for(size_t i=0; i<it->second.size();i++){
-				std::cout<<"\t"<<it->second[i]<<std::endl;
-
+		if (file.is_open()){
+			while (!file.eof()){
+				getline(file, line);
+				boost::split(result, line, boost::is_any_of(" ,\t"), boost::token_compress_on);
+				std::cout<<line<<std::endl;
+				line=result[0];
+				result.erase(result.begin());
+				this->object_locs.insert(std::pair<std::string, std::vector<std::string> >(line, result));
 			}
-		}*/
+			file.close();
+			/*std::map<std::string, std::vector<std::string> >::iterator it;
+			for(it=this->object_locs.begin();it!=this->object_locs.end(); it++){
+				std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+				std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+				std::cout<<it->first<<" :"<<std::endl;
+				for(size_t i=0; i<it->second.size();i++){
+					std::cout<<"\t"<<it->second[i]<<std::endl;
+
+				}
+			}*/
+		}else{
+			this->no_base_knowledge=true;
+			std::cout<<"problem openning the file with GCM knoledge base"<<std::endl;
+		}
 	}
 }
 
@@ -121,24 +129,32 @@ ObjRecognizer::ObjRecognizer()
 		this->no_base_knowledge=true; 
 	}
 	else{
-		/*this->no_base_knowledge=false;
+		this->no_base_knowledge=false;
 		file.open(knowledgeFile.c_str());
-		while (!file.eof()){
-			getline(file, line);
-			boost::split(result, line, boost::is_any_of(" "));
-			line=result[0];
-			result.erase(result.begin()+1);
-			this->object_locs.insert(std::pair<std::string, std::vector<std::string> >(line, result));
-		}
-		file.close();
-		std::map<std::string, std::vector<std::string> >::iterator it;
-		for(it=this->object_locs.begin();it!=this->object_locs.end(); it++){
-			std::cout<<it->first<<" :"<<std::endl;
-			/*for(size_t i=0; i<it->second.size();i++){
-				std::cout<<"\t"<<it->second[i]<<std::endl;
-
+		if (file.is_open()){
+			while (!file.eof()){
+				getline(file, line);
+				boost::split(result, line, boost::is_any_of(" ,\t"), boost::token_compress_on);
+				std::cout<<line<<std::endl;
+				line=result[0];
+				result.erase(result.begin());
+				this->object_locs.insert(std::pair<std::string, std::vector<std::string> >(line, result));
 			}
-		}*/
+			file.close();
+			/*std::map<std::string, std::vector<std::string> >::iterator it;
+			for(it=this->object_locs.begin();it!=this->object_locs.end(); it++){
+				std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+				std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+				std::cout<<it->first<<" :"<<std::endl;
+				for(size_t i=0; i<it->second.size();i++){
+					std::cout<<"\t"<<it->second[i]<<std::endl;
+
+				}
+			}*/
+		}else{
+			this->no_base_knowledge=true;
+			std::cout<<"problem openning the file with GCM knoledge base"<<std::endl;
+		}
 	}
 
 }
@@ -235,15 +251,28 @@ std::string ObjRecognizer::RecognizeObject(DetectedObject detObj, cv::Mat bgrIma
 	return recoName;
 }
 
-std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location)
+std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgrImage, std::string location, std::map<std::string,double> locs)
 {
 	std::cout<<"RecognizeObjectGCM"<<std::endl;
-	//std::cout<<location<<std::endl;
+	std::cout<<location<<std::endl;
 
 	std::vector<double> heightErrorsVec; 
 	std::vector<double> shapeErrorsVec; 
 	std::vector<double> colorErrorsVec;
 	std::vector<double> global_error;
+
+	std::map<std::string, double >::iterator it_locs;
+	std::map<std::string, std::vector<std::string> >::iterator it_object_loc;
+	std::vector<std::string>::iterator it_strings;
+	/*std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+	std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+	for(it_locs=locs.begin();it_locs!=locs.end(); ++it_locs){
+		std::cout<<it_locs->first<<" :"<<std::endl;
+		std::cout<<"\t"<<it_locs->second<<std::endl;
+	}
+	std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+	std::cout<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;*/
+
 	// Getting ERRORS diferences
 	cv::Mat detObjHisto = CalculateHistogram( bgrImage, detObj.oriMask ); 
 	for( int i=0; i< this->trainingNames.size(); i++)
@@ -279,7 +308,7 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 
 		global_error[i]=exp(-.05*global_error[i]);
 	}
-
+	//debbugin function
 	/*std::cout<<"after similities"<<std::endl;
 	for(size_t i=0;i<global_error.size();i++){
 
@@ -288,7 +317,7 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 
 	//applying GCM a=m*s
 
-	for (size_t i=0; i <this->trainingNames.size();i++){
+	/*for (size_t i=0; i <this->trainingNames.size();i++){
 		
 		if(location=="kitchen"){
 			if(this->trainingNames[i]=="book"||this->trainingNames[i]=="green_mug"||this->trainingNames[i]=="cutting_board"){
@@ -301,6 +330,40 @@ std::string ObjRecognizer::RecognizeObjectGCM(DetectedObject detObj, cv::Mat bgr
 				//std::cout<<"m = office"<<std::endl;
 				global_error[i]*=1.0/5;
 			}
+		}
+	}*/
+	//real function
+	for (size_t i=0; i <this->trainingNames.size();++i){
+		std::cout<<"valur of iterator : "<<i<<" , "<<trainingNames[i]<<std::endl;
+		it_object_loc=this->object_locs.find(trainingNames[i]); //looking for object locations knowledge
+		if(it_object_loc!=object_locs.end()){
+			std::cout<<"I found knowledge about  "<<trainingNames[i]<<std::endl;
+			it_strings=find(it_object_loc->second.begin(),it_object_loc->second.end(), location);//looking if current location is in the list
+			if(it_strings!=it_object_loc->second.end()){//if its in the list
+				std::cout<<"this object should be in this room: "<<location<<std::endl;
+				it_locs=locs.find(location);//getting prob
+				if(it_locs!=locs.end()){
+					std::cout<<"apply this m: "<<it_locs->second<<std::endl;
+					global_error[i]*=it_locs->second;//applying prob
+				}else{
+					std::cout<<"It shouldn't be in here or there is no probability for my location"<<std::endl;
+				}
+			}else{//current location is not in the list of this object
+				std::cout<<"this object SHOUDEN'T be in "<<location<<std::endl;
+				it_locs=locs.find(it_object_loc->second[0]);
+				if(it_locs!=locs.end()){
+					global_error[i]*=it_locs->second;//applying prob of one of their room
+					std::cout<<"M APPLY OF "<<it_locs->first<<" :"<<it_locs->second<<std::endl;
+				}else{
+					global_error[i]*=.5;
+					std::cout<<"m applied of 0.5"<<std::endl;
+				}
+			}
+
+		}
+		else{
+			std::cout<<"I DIDN'T found knowledge about "<<trainingNames[i]<<"M applied 0.5"<<std::endl;
+			global_error[i]*=.5;
 		}
 	}
 

@@ -34,9 +34,10 @@ int main(int argc, char** argv){
     std::vector<vision_msgs::VisionObject> recoObjList;
     float robot_x,robot_y,robot_a;
     std::string room="";
-    float prob;
+    double prob;
     std::map<std::string, std::vector<float> > locations;
-    
+    std::vector<std::string> rooms;
+    std::vector<double> probs;
 
    /* myfile.open ("/home/pumas/Desktop/data_hugo/cutting_board.csv",std::ios::app|std::ios::out);
 
@@ -47,33 +48,40 @@ int main(int argc, char** argv){
     myfile.flush();*/
     while(ros::ok() && s!="q"){
 
-        /*JustinaKnowledge::getRobotPoseRoom(room);
+        JustinaKnowledge::getRobotPoseRoom(room);
         if(room!=""){
             std::cout<<"location: "<<room<<std::endl;
-            JustinaKnowledge::getProbOfBeingRoom("kitchen",prob);
-            std::cout<<room<<": "<<prob<<std::endl;
+            //JustinaKnowledge::getProbOfBeingRoom("kitchen",prob);
+            //std::cout<<room<<": "<<prob<<std::endl;
         }
         else
-            std::cout<<"Error "<<std::endl;*/
-        JustinaKnowledge::getProbOfBeingRoom("kitchen",prob);
+            std::cout<<"Error "<<std::endl;
+        /*JustinaKnowledge::getProbOfBeingRoom("kitchen",prob);
         std::cout<<"kitchen: "<<prob<<std::endl;
         JustinaKnowledge::getProbOfBeingRoom("office",prob);
         std::cout<<"office: "<<prob<<std::endl;
         JustinaKnowledge::getProbOfBeingRoom("arena",prob);
-        std::cout<<"arena: "<<prob<<std::endl;
+        std::cout<<"arena: "<<prob<<std::endl;*/
+        JustinaKnowledge::getAllRooms(rooms);
+        std::cout <<"calculatin, probs " <<"\n";
+        JustinaKnowledge::getProbOfBeingRoom(rooms, probs);
+        for(size_t i=0; i<rooms.size();i++){
+            std::cout<<rooms[i]<<" : "<<probs[i]<<std::endl;
+
+        }
         /*JustinaKnowledge::getKnownLocations(locations);
 
         for(auto it = locations.cbegin(); it != locations.cend(); ++it){
             std::cout << it->first << " " << it->second<<"\n";
         }*/
 
-        /*if(JustinaVision::detectObjectsGCM(recoObjList,room,false)){
+        if(JustinaVision::detectObjectsGCM(recoObjList,rooms,probs,room,false)){
             object=recoObjList[0].id;
         }
         else{
             object="no detected";
         }
-        std::cout<<"obj_reco.id: "<<object<<std::endl;*/
+        std::cout<<"obj_reco.id: "<<object<<std::endl;
 
         ros::spinOnce();
         loop.sleep();

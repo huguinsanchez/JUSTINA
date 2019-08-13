@@ -494,12 +494,14 @@ bool JustinaVision::detectObjects(std::vector<vision_msgs::VisionObject>& recoOb
     std::cout << "JustinaVision.->Detected " << int(recoObjList.size()) << " objects" << std::endl;
     return true;
 }
-bool JustinaVision::detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList, std::string location, bool saveFiles)
+bool JustinaVision::detectObjectsGCM(std::vector<vision_msgs::VisionObject>& recoObjList, std::vector<std::string> rooms, std::vector<double> probs,std::string location, bool saveFiles)
 {
     std::cout << "JustinaVision.->Trying to detect objects with GCM... " << std::endl;
     vision_msgs::DetectObjectsGCM srv;
     srv.request.saveFiles = saveFiles;
     srv.request.location = location;
+    srv.request.rooms=rooms;
+    srv.request.probs=probs;
     if(!cltDetectObjectsGCM.call(srv))
     {
         std::cout << std::endl << "Justina::Vision can't detect anything" << std::endl << std::endl;

@@ -35,6 +35,7 @@ add_service_files(
   GetRoomOfPoint.srv
   kdbFilePath.srv
   sphinxConf.srv 
+  getAllRooms.srv
 )
 
 add_message_files(

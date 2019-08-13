@@ -57,7 +57,7 @@ bool handle_mvncdf(localization::MVNCDF::Request &req,
     }*/
 
 	res.prob=mvn_cdf(req.lx, req.ly, req.ux, req.uy, req.step, req.mean_x, req.mean_y, cov);
-    std::cout<<"prob: "<<res.prob<<std::endl;
+    //std::cout<<"prob: "<<res.prob<<std::endl;
 	return true;
 
 

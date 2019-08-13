@@ -3,4 +3,4 @@ organ_attack office
 green_pen_holder office
 green_mug kitchen
 cutting_board kitchen
-white_board office
+white_board bedroom office

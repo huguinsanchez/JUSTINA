@@ -611,9 +611,15 @@ bool callback_srvDetectObjectsGCM(vision_msgs::DetectObjectsGCM::Request &req, v
     DrawObjects( detObjList ); 
 
     cv::Mat imaToShow = imaBGR.clone();
+    std::map<std::string, double> locs;
+    for (int i = 0; i < req.rooms.size(); ++i)
+    {
+        locs.insert(std::pair<std::string, double >(req.rooms[i], req.probs[i]));
+    }
     for( int i=0; i<detObjList.size(); i++)
     {
-        std::string objName = objReco.RecognizeObjectGCM( detObjList[i], imaBGR, req.location);
+        ///AQUI TE QUEDASTE, MODIFICA LA FUNCION PARA RECIBIR TU MAP
+        std::string objName = objReco.RecognizeObjectGCM( detObjList[i], imaBGR, req.location, locs);
         std::string objTag;
 
         vision_msgs::VisionObject obj;
